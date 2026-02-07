@@ -1,7 +1,8 @@
 'use client';
 
-import { InstagramIcon, FacebookIcon, LinkedinIcon, MessageCircle } from 'lucide-react';
+import { InstagramIcon, FacebookIcon, LinkedinIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
 interface SocialLinksProps {
   className?: string;
@@ -12,7 +13,7 @@ const socialItems = [
   { label: 'Instagram', href: '#', icon: InstagramIcon },
   { label: 'Facebook', href: '#', icon: FacebookIcon },
   { label: 'LinkedIn', href: '#', icon: LinkedinIcon },
-  { label: 'WhatsApp', href: '#', icon: MessageCircle },
+  { label: 'WhatsApp', href: '#', icon: WhatsAppIcon },
 ];
 
 export default function SocialLinks({

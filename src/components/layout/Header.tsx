@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Menu } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { navItems } from '@/data/navigation';
 import Logo from '@/components/ui/Logo';
@@ -39,7 +39,7 @@ export default function Header() {
             : 'bg-gradient-to-b from-dark/60 via-dark/20 to-transparent'
         )}
       >
-        <nav className="max-w-7xl mx-auto px-6 h-[80px] flex items-center justify-between md:justify-center" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
+        <nav className="max-w-7xl mx-auto px-6 h-[64px] md:h-[80px] flex items-center justify-between md:justify-center" style={{ textShadow: '0 1px 3px rgba(0,0,0,0.4)' }}>
           {/* Desktop left nav */}
           <div className="hidden md:flex items-center gap-8">
             {leftLinks.map((item, i) => (
@@ -95,10 +95,10 @@ export default function Header() {
           {/* Mobile hamburger */}
           <button
             className="md:hidden text-cream p-2"
-            onClick={() => setIsMenuOpen(true)}
-            aria-label="Open menu"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            <Menu size={24} />
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
       </motion.header>

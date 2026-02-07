@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
 const WHATSAPP_URL =
   'https://wa.me/919999999999?text=Hi%2C%20I%27d%20like%20to%20discuss%20a%20project%20with%20Forma%20Studio.';
@@ -60,7 +60,7 @@ export default function WhatsAppFloat() {
             'hover:scale-110 transition-transform duration-300'
           )}
         >
-          <MessageCircle size={24} />
+          <WhatsAppIcon size={28} />
         </motion.a>
       )}
     </AnimatePresence>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -28,6 +28,8 @@ const linkVariants = {
 };
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -40,11 +42,34 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     };
   }, [isOpen]);
 
+  // Escape key handler
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-40 bg-dark"
+          className="fixed inset-0 z-[60] bg-dark"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
@@ -53,6 +78,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         >
           {/* Close button */}
           <motion.button
+            ref={closeButtonRef}
             className="absolute top-6 right-6 text-cream p-2"
             onClick={onClose}
             aria-label="Close menu"

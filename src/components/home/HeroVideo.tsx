@@ -1,9 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import Image from 'next/image';
 import { gsap, useGSAP } from '@/hooks/useGSAPSetup';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useVideoPlayback } from '@/hooks/useVideoPlayback';
 import ScrollIndicator from '@/components/ui/ScrollIndicator';
 import styles from '@/styles/animations.module.css';
@@ -16,7 +14,6 @@ export default function HeroVideo() {
   const tagline2Ref = useRef<HTMLParagraphElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
 
-  const isDesktop = useMediaQuery('(min-width: 768px)');
   useVideoPlayback(videoRef);
 
   useGSAP(
@@ -62,33 +59,24 @@ export default function HeroVideo() {
         });
       }
     },
-    { scope: sectionRef, dependencies: [isDesktop] }
+    { scope: sectionRef }
   );
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
       {/* Video / Poster fallback */}
       <div ref={mediaRef} className="absolute inset-0">
-        {isDesktop ? (
-          <video
-            ref={videoRef}
-            playsInline
-            muted
-            autoPlay
-            loop
-            preload="auto"
-            src="/video/hero-video.mp4"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        ) : (
-          <Image
-            src="/images/hero/hero-poster.jpg"
-            alt="Forma Studio hero"
-            fill
-            className="object-cover"
-            priority
-          />
-        )}
+        <video
+          ref={videoRef}
+          playsInline
+          muted
+          autoPlay
+          loop
+          preload="auto"
+          poster="/images/hero/hero-poster.jpg"
+          src="/video/hero-video.mp4"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
 
       {/* Gradient overlay */}
