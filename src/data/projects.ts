@@ -251,7 +251,7 @@ export const projects: Project[] = [
       },
       {
         id: 'img-heritage-02',
-        url: 'https://images.unsplash.com/photo-1464146072726-3616e2d5d7ef?w=800&h=600&fit=crop',
+        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
         alt: 'Mirror-inlay ceiling in the principal chamber',
         width: 800,
         height: 600,
@@ -511,7 +511,7 @@ export const projects: Project[] = [
       'An adaptive reuse of a French-colonial townhouse in Pondicherry that honours artisanal heritage while inserting contemporary hospitality elements.',
     heroImage: {
       id: 'img-colonial-hero',
-      url: 'https://images.unsplash.com/photo-1464146072726-3616e2d5d7ef?w=1600&h=900&fit=crop',
+      url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&h=900&fit=crop',
       alt: 'The Colonial Restoration facade with restored Belgian-tile verandah',
       width: 1600,
       height: 900,
@@ -519,7 +519,7 @@ export const projects: Project[] = [
     gallery: [
       {
         id: 'img-colonial-01',
-        url: 'https://images.unsplash.com/photo-1464146072726-3616e2d5d7ef?w=800&h=600&fit=crop',
+        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&h=600&fit=crop',
         alt: 'Street-facing elevation with original louvred shutters',
         width: 800,
         height: 600,
