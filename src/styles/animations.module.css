@@ -1,0 +1,81 @@
+/* Hero video gradient overlay - asymmetric for editorial feel */
+.heroGradientOverlay {
+  background: linear-gradient(
+    160deg,
+    rgba(20, 27, 43, 0.35) 0%,
+    rgba(20, 27, 43, 0.45) 40%,
+    rgba(20, 27, 43, 0.7) 100%
+  );
+}
+
+/* Nav link underline hover animation */
+.navLink {
+  position: relative;
+}
+
+.navLink::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.navLink:hover::after {
+  transform: scaleX(1);
+}
+
+/* Image clip-path reveal */
+.clipReveal {
+  clip-path: inset(0 100% 0 0);
+}
+
+.clipRevealActive {
+  clip-path: inset(0 0% 0 0);
+  transition: clip-path 1s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+/* Button fill from bottom hover */
+.btnFill {
+  position: relative;
+  overflow: hidden;
+}
+
+.btnFill::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+  z-index: 0;
+  opacity: 0.1;
+}
+
+.btnFill:hover::before {
+  transform: translateY(0);
+}
+
+/* Gradient mesh animation for CTA section */
+.gradientMesh {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(212, 101, 74, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(196, 155, 90, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 40% 80%, rgba(212, 184, 150, 0.08) 0%, transparent 50%);
+  background-size: 200% 200%;
+  animation: meshMove 15s ease-in-out infinite;
+}
+
+@keyframes meshMove {
+  0%, 100% { background-position: 0% 0%, 100% 0%, 0% 100%; }
+  33% { background-position: 100% 50%, 0% 100%, 50% 0%; }
+  66% { background-position: 50% 100%, 50% 50%, 100% 50%; }
+}
