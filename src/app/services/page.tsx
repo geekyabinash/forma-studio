@@ -10,7 +10,7 @@ import type { Service } from '@/types';
 import SplitTextReveal from '@/components/animations/SplitTextReveal';
 import ScrollReveal from '@/components/animations/ScrollReveal';
 import ParallaxLayer from '@/components/animations/ParallaxLayer';
-import styles from '@/styles/animations.module.css';
+
 
 /* ------------------------------------------------------------------ */
 /*  ServiceSection                                                     */
@@ -140,11 +140,19 @@ export default function ServicesPage() {
       {/* Hero                                                          */}
       {/* ============================================================ */}
       <section
-        className={`relative h-[50vh] md:h-[60vh] overflow-hidden bg-dark flex items-center justify-center ${styles.gradientMesh}`}
+        className="relative h-[50vh] md:h-[60vh] overflow-hidden flex items-center justify-center"
       >
+        <Image
+          src="/images/services-hero.jpg"
+          alt="Modern architecture"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-dark/60" />
         <SplitTextReveal
           as="h1"
-          className="font-display text-5xl md:text-6xl lg:text-7xl text-cream font-normal"
+          className="relative z-10 font-display text-5xl md:text-6xl lg:text-7xl text-cream font-normal"
         >
           Our Services
         </SplitTextReveal>
