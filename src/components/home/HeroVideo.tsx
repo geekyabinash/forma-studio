@@ -101,16 +101,21 @@ export default function HeroVideo() {
       <div className="absolute inset-0 z-[3] flex flex-col items-center justify-center text-center">
         <h1
           ref={titleRef}
-          className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.2em] text-cream"
+          className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] md:tracking-[0.2em] leading-[1.1] md:leading-normal text-cream"
         >
-          F<span className="text-coral">O</span>RMA STU
-          <span
-            className="text-coral inline-block -ml-[0.05em] mr-[0.15em]"
-            style={{ transform: 'scaleX(-1)', letterSpacing: '0em' }}
-          >
-            D
+          <span className="block md:inline whitespace-nowrap">
+            F<span className="text-coral">O</span>RMA
+          </span>{' '}
+          <span className="block md:inline whitespace-nowrap">
+            STU
+            <span
+              className="text-coral inline-block -ml-[0.05em] mr-[0.15em]"
+              style={{ transform: 'scaleX(-1)', letterSpacing: '0em' }}
+            >
+              D
+            </span>
+            IO
           </span>
-          IO
         </h1>
         <p
           ref={tagline1Ref}
