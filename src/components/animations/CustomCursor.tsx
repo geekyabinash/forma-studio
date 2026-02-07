@@ -8,7 +8,7 @@ export default function CustomCursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const xTo = useRef<gsap.QuickToFunc | null>(null);
   const yTo = useRef<gsap.QuickToFunc | null>(null);
-  const hasHover = useMediaQuery('(hover: hover)');
+  const hasHover = useMediaQuery('(hover: hover) and (pointer: fine)');
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     xTo.current?.(e.clientX);
