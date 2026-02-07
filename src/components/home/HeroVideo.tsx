@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback } from 'react';
+import { useRef } from 'react';
 import Image from 'next/image';
 import { gsap, useGSAP } from '@/hooks/useGSAPSetup';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -15,9 +15,6 @@ export default function HeroVideo() {
   const tagline1Ref = useRef<HTMLParagraphElement>(null);
   const tagline2Ref = useRef<HTMLParagraphElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
-
-  const [videoReady, setVideoReady] = useState(false);
-  const handleCanPlay = useCallback(() => setVideoReady(true), []);
 
   const isDesktop = useMediaQuery('(min-width: 768px)');
   useVideoPlayback(videoRef);
@@ -72,16 +69,7 @@ export default function HeroVideo() {
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
       {/* Video / Poster fallback */}
       <div ref={mediaRef} className="absolute inset-0">
-        {/* Poster image — always rendered, loads fast with priority */}
-        <Image
-          src="/images/hero/hero-poster.jpg"
-          alt="Forma Studio hero"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Video overlays the image on desktop, fades in when ready */}
-        {isDesktop && (
+        {isDesktop ? (
           <video
             ref={videoRef}
             playsInline
@@ -90,8 +78,15 @@ export default function HeroVideo() {
             loop
             preload="auto"
             src="/video/hero-video.mp4"
-            onCanPlay={handleCanPlay}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${videoReady ? 'opacity-100' : 'opacity-0'}`}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        ) : (
+          <Image
+            src="/images/hero/hero-poster.jpg"
+            alt="Forma Studio hero"
+            fill
+            className="object-cover"
+            priority
           />
         )}
       </div>
