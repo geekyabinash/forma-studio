@@ -7,6 +7,7 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { animateCountUp } from '@/lib/animations';
 import ParallaxLayer from '@/components/animations/ParallaxLayer';
 import ScrollReveal from '@/components/animations/ScrollReveal';
+import ImageReveal from '@/components/animations/ImageReveal';
 
 export default function ParallaxShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -32,110 +33,145 @@ export default function ParallaxShowcase() {
     { scope: sectionRef }
   );
 
-  /* Mobile: vertical stack layout with fade-in per image */
+  /* Mobile: clean vertical stack with stat counter between images */
   if (isMobile) {
     return (
-      <section ref={sectionRef} className="relative w-full bg-dark overflow-hidden">
-        <ScrollReveal direction="up" className="relative w-full h-[60vh]">
+      <section ref={sectionRef} className="relative w-full bg-dark overflow-hidden py-20 px-6">
+        {/* Background architectural image */}
+        <div className="absolute inset-0 z-0">
           <Image
             src="/images/parallax/layer-1-bg.jpg"
-            alt="Background architectural landscape"
+            alt=""
             fill
-            className="object-cover"
-            style={{ filter: 'blur(1px)' }}
+            className="object-cover opacity-15"
+            sizes="100vw"
           />
-        </ScrollReveal>
+          <div className="absolute inset-0 bg-gradient-to-b from-dark/60 via-dark/40 to-dark/80" />
+        </div>
 
-        <ScrollReveal direction="up" delay={0.1} className="relative w-full h-[50vh]">
-          <Image
-            src="/images/parallax/layer-2-mid.jpg"
-            alt="Mid-ground architectural detail"
-            fill
-            className="object-cover"
-          />
-        </ScrollReveal>
+        {/* Section label */}
+        <p className="relative z-[1] font-sans text-base tracking-[0.3em] uppercase text-gold/60 mb-10">
+          Selected Works
+        </p>
 
-        <ScrollReveal direction="up" delay={0.2} className="relative w-full h-[50vh]">
-          <Image
-            src="/images/parallax/layer-3-fg.jpg"
-            alt="Foreground architectural element"
-            fill
-            className="object-cover"
-          />
-        </ScrollReveal>
+        <div className="relative z-[1] space-y-8">
+          {/* Primary image — portrait */}
+          <ScrollReveal direction="up">
+            <div className="relative w-full aspect-[3/4] overflow-hidden">
+              <Image
+                src="/images/parallax/layer-2-mid.jpg"
+                alt="Architectural detail showcasing Forma Studio design"
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            </div>
+          </ScrollReveal>
 
-        {/* Floating stat */}
-        <div className="py-16 px-6 text-center">
-          <span
-            ref={countRef}
-            className="font-display text-6xl text-cream block"
-          >
-            0
-          </span>
-          <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
-            Projects Delivered
-          </span>
+          {/* Stat counter — centered between images */}
+          <ScrollReveal direction="up" delay={0.1} className="text-center py-8">
+            <span
+              ref={countRef}
+              className="font-display text-6xl text-cream block"
+            >
+              0
+            </span>
+            <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
+              Projects Delivered
+            </span>
+            <div className="w-12 h-px bg-gold/40 mt-4 mx-auto" />
+          </ScrollReveal>
+
+          {/* Secondary image — landscape */}
+          <ScrollReveal direction="up" delay={0.15}>
+            <div className="relative w-full aspect-[4/3] overflow-hidden">
+              <Image
+                src="/images/parallax/layer-3-fg.jpg"
+                alt="Architectural element by Forma Studio"
+                fill
+                className="object-cover"
+                sizes="100vw"
+              />
+            </div>
+          </ScrollReveal>
         </div>
 
         {/* Grain overlay */}
-        <div className="absolute inset-0 z-40 grain-overlay pointer-events-none" />
+        <div className="absolute inset-0 z-10 grain-overlay pointer-events-none" />
       </section>
     );
   }
 
-  /* Desktop: overlapping parallax layers */
+  /* Desktop: asymmetric two-column editorial grid */
   return (
-    <section ref={sectionRef} className="relative h-[150vh] w-full overflow-hidden bg-dark">
-      {/* Layer 1: deepest background */}
-      <ParallaxLayer speed={0.1} className="absolute inset-0 z-0">
+    <section ref={sectionRef} className="relative w-full bg-dark overflow-hidden py-32 md:py-40">
+      {/* Background architectural image */}
+      <div className="absolute inset-0 z-0">
         <Image
           src="/images/parallax/layer-1-bg.jpg"
-          alt="Background architectural landscape"
+          alt=""
           fill
-          className="object-cover"
-          style={{ filter: 'blur(1px)' }}
+          className="object-cover opacity-15"
+          sizes="100vw"
         />
-      </ParallaxLayer>
+        <div className="absolute inset-0 bg-gradient-to-b from-dark/60 via-dark/40 to-dark/80" />
+      </div>
 
-      {/* Layer 2: mid-ground window */}
-      <ParallaxLayer speed={0.3} className="absolute inset-0 z-10">
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[55%] h-[65%] overflow-hidden">
-          <Image
-            src="/images/parallax/layer-2-mid.jpg"
-            alt="Mid-ground architectural detail"
-            fill
-            className="object-cover"
-          />
+      <div className="relative z-[1] max-w-7xl mx-auto px-6">
+        {/* Section label */}
+        <ScrollReveal direction="left">
+          <p className="font-sans text-sm md:text-base lg:text-lg tracking-[0.3em] uppercase text-gold/60 mb-16">
+            Selected Works
+          </p>
+        </ScrollReveal>
+
+        {/* Asymmetric two-column grid */}
+        <div className="grid grid-cols-12 gap-8 items-start">
+          {/* Left column: dominant portrait image with subtle parallax */}
+          <div className="col-span-7">
+            <ParallaxLayer speed={0.15}>
+              <div className="relative w-full aspect-[3/4] overflow-hidden">
+                <Image
+                  src="/images/parallax/layer-2-mid.jpg"
+                  alt="Architectural detail showcasing Forma Studio design"
+                  fill
+                  className="object-cover"
+                  sizes="58vw"
+                />
+              </div>
+            </ParallaxLayer>
+          </div>
+
+          {/* Right column: offset vertically for staggered effect */}
+          <div className="col-span-5 pt-24 md:pt-32">
+            {/* Secondary image with clip-path reveal */}
+            <ImageReveal
+              src="/images/parallax/layer-3-fg.jpg"
+              alt="Architectural element by Forma Studio"
+              width={600}
+              height={450}
+            />
+
+            {/* Stat counter block */}
+            <ScrollReveal direction="up" delay={0.15} className="mt-12 md:mt-16">
+              <span
+                ref={countRef}
+                className="font-display text-7xl md:text-8xl text-cream block"
+              >
+                0
+              </span>
+              <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
+                Projects Delivered
+              </span>
+              {/* Gold accent line */}
+              <div className="w-12 h-px bg-gold/40 mt-6" />
+            </ScrollReveal>
+          </div>
         </div>
-      </ParallaxLayer>
-
-      {/* Layer 3: foreground offset */}
-      <ParallaxLayer speed={0.6} className="absolute inset-0 z-20">
-        <div className="absolute right-[5%] bottom-[10%] w-[35%] h-[50%] overflow-hidden">
-          <Image
-            src="/images/parallax/layer-3-fg.jpg"
-            alt="Foreground architectural element"
-            fill
-            className="object-cover"
-          />
-        </div>
-      </ParallaxLayer>
-
-      {/* Floating stat */}
-      <div className="absolute z-30 left-[10%] bottom-[25%]">
-        <span
-          ref={countRef}
-          className="font-display text-6xl md:text-7xl text-cream block"
-        >
-          0
-        </span>
-        <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
-          Projects Delivered
-        </span>
       </div>
 
       {/* Grain overlay */}
-      <div className="absolute inset-0 z-40 grain-overlay pointer-events-none" />
+      <div className="absolute inset-0 z-10 grain-overlay pointer-events-none" />
     </section>
   );
 }

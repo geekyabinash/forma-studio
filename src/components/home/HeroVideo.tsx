@@ -103,19 +103,26 @@ export default function HeroVideo() {
           ref={titleRef}
           className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.2em] text-cream"
         >
-          FORMA STUDIO
+          F<span className="text-coral">O</span>RMA STU
+          <span
+            className="text-coral inline-block -ml-[0.05em] mr-[0.15em]"
+            style={{ transform: 'scaleX(-1)', letterSpacing: '0em' }}
+          >
+            D
+          </span>
+          IO
         </h1>
         <p
           ref={tagline1Ref}
-          className="font-display text-xl md:text-2xl lg:text-3xl text-cream/90 mt-4"
+          className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-4 tracking-[0.15em]"
         >
-          Design with intent.
+          DESIGN WITH INTENT.
         </p>
         <p
           ref={tagline2Ref}
-          className="font-display text-xl md:text-2xl lg:text-3xl text-cream/90 mt-1"
+          className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-1 tracking-[0.15em]"
         >
-          Build with <span className="font-script text-coral">passion.</span>
+          BUILD WITH <span className="text-coral">PASSION.</span>
         </p>
       </div>
 

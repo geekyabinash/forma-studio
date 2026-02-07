@@ -73,30 +73,6 @@ export const services: Service[] = [
     },
   },
   {
-    id: 'svc-004',
-    title: 'Urban Planning',
-    slug: 'urban-planning',
-    shortTitle: 'Urban',
-    description:
-      'Our urban planning team shapes neighbourhoods and districts that balance density with liveability. Through data-driven analysis, stakeholder engagement, and scenario modelling, we create resilient master plans that accommodate growth while preserving cultural identity and ecological corridors.',
-    icon: 'M3 3h18v18H3z M3 9h18 M3 15h18 M9 3v18 M15 3v18',
-    features: [
-      'District and neighbourhood master planning',
-      'Transit-oriented development frameworks',
-      'Public realm and streetscape design',
-      'Stakeholder consultation and participatory design',
-      'Development control and zoning guidelines',
-    ],
-    featuredProjectSlug: 'metro-commerce-hub',
-    image: {
-      id: 'img-svc-urban',
-      url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1200&h=800&fit=crop',
-      alt: 'Modern urban commercial district with mixed-use towers',
-      width: 1200,
-      height: 800,
-    },
-  },
-  {
     id: 'svc-005',
     title: 'Renovation & Restoration',
     slug: 'renovation-restoration',
