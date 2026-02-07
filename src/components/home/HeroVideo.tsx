@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { gsap, useGSAP } from '@/hooks/useGSAPSetup';
 import { useVideoPlayback } from '@/hooks/useVideoPlayback';
 import ScrollIndicator from '@/components/ui/ScrollIndicator';
@@ -13,6 +13,11 @@ export default function HeroVideo() {
   const tagline1Ref = useRef<HTMLParagraphElement>(null);
   const tagline2Ref = useRef<HTMLParagraphElement>(null);
   const mediaRef = useRef<HTMLDivElement>(null);
+  const [videoReady, setVideoReady] = useState(false);
+
+  const handleVideoPlaying = useCallback(() => {
+    setVideoReady(true);
+  }, []);
 
   useVideoPlayback(videoRef);
 
@@ -64,7 +69,7 @@ export default function HeroVideo() {
 
   return (
     <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
-      {/* Video / Poster fallback */}
+      {/* Video */}
       <div ref={mediaRef} className="absolute inset-0">
         <video
           ref={videoRef}
@@ -73,11 +78,18 @@ export default function HeroVideo() {
           autoPlay
           loop
           preload="auto"
-          poster="/images/hero/hero-poster.jpg"
+          onPlaying={handleVideoPlaying}
           src="/video/hero-video.mp4"
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
+
+      {/* Seamless loader — matches bg, fades out when video plays */}
+      <div
+        className={`absolute inset-0 bg-dark transition-opacity duration-1000 ease-out pointer-events-none ${
+          videoReady ? 'opacity-0' : 'opacity-100'
+        }`}
+      />
 
       {/* Gradient overlay */}
       <div className={`absolute inset-0 z-[1] ${styles.heroGradientOverlay}`} />
