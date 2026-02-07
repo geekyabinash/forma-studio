@@ -19,8 +19,6 @@ export default function ParallaxShowcase() {
       const el = countRef.current;
       if (!el) return;
 
-      animateCountUp(el, 150, 2);
-
       ScrollTrigger.create({
         trigger: el,
         start: 'top 85%',
@@ -30,7 +28,7 @@ export default function ParallaxShowcase() {
         once: true,
       });
     },
-    { scope: sectionRef }
+    { scope: sectionRef, dependencies: [isMobile] }
   );
 
   /* Mobile: clean vertical stack with stat counter between images */
