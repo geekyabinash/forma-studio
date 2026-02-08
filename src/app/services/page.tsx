@@ -144,7 +144,7 @@ export default function ServicesPage() {
       >
         <Image
           src="/images/services-hero.jpg"
-          alt="Modern architecture"
+          alt="Grand Victorian interior of the Natural History Museum London"
           fill
           className="object-cover"
           priority

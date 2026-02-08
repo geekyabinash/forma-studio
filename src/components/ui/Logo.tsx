@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
 interface LogoProps {
@@ -14,7 +15,14 @@ export default function Logo({
   className,
 }: LogoProps) {
   return (
-    <div className={cn('flex items-center', className)}>
+    <div className={cn('flex items-center gap-1.5', className)}>
+      <Image
+        src="/images/logo/FormaStudioLogo.png"
+        alt="Forma Studio"
+        width={160}
+        height={160}
+        className="w-9 h-9 md:w-10 md:h-10 object-contain"
+      />
       {showText && (
         <div className="flex items-baseline gap-1">
           <span

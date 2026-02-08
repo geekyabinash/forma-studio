@@ -73,14 +73,12 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
 /* ------------------------------------------------------------------ */
 
 export default function ServicesOverview() {
-  const displayedServices = services.slice(0, 4);
-
   return (
     <section className="py-24 md:py-32 px-6">
       <SectionHeading title="What We Do" />
 
-      <div className="max-w-7xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
-        {displayedServices.map((service, index) => (
+      <div className="max-w-7xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-6">
+        {services.map((service, index) => (
           <ServiceCard key={service.id} service={service} index={index} />
         ))}
       </div>

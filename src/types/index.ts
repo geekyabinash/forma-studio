@@ -85,3 +85,34 @@ export interface ContactFormData {
   budget: string;
   message: string;
 }
+
+// ========== Careers ==========
+export type Department = 'architecture' | 'interior-design' | 'engineering' | 'management';
+
+export type EmploymentType = 'full-time' | 'part-time' | 'internship';
+
+export interface JobPosition {
+  id: string;
+  title: string;
+  department: Department;
+  employmentType: EmploymentType;
+  location: string;
+  experience: string;
+  description: string;
+  responsibilities: string[];
+  qualifications: string[];
+  postedDate: string;
+}
+
+export interface Benefit {
+  id: string;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface CultureValue {
+  id: string;
+  title: string;
+  description: string;
+}

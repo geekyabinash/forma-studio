@@ -2,9 +2,9 @@
 .heroGradientOverlay {
   background: linear-gradient(
     160deg,
-    rgba(20, 27, 43, 0.35) 0%,
-    rgba(20, 27, 43, 0.45) 40%,
-    rgba(20, 27, 43, 0.7) 100%
+    rgba(20, 27, 43, 0.45) 0%,
+    rgba(20, 27, 43, 0.55) 40%,
+    rgba(20, 27, 43, 0.75) 100%
   );
 }
 

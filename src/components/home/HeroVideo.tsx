@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import { gsap, useGSAP } from '@/hooks/useGSAPSetup';
 import { useVideoPlayback } from '@/hooks/useVideoPlayback';
 import ScrollIndicator from '@/components/ui/ScrollIndicator';
@@ -9,6 +10,7 @@ import styles from '@/styles/animations.module.css';
 export default function HeroVideo() {
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const tagline1Ref = useRef<HTMLParagraphElement>(null);
   const tagline2Ref = useRef<HTMLParagraphElement>(null);
@@ -23,23 +25,25 @@ export default function HeroVideo() {
 
   useGSAP(
     () => {
+      const logo = logoRef.current;
       const title = titleRef.current;
       const line1 = tagline1Ref.current;
       const line2 = tagline2Ref.current;
       const media = mediaRef.current;
-      if (!title || !line1 || !line2) return;
+      if (!logo || !title || !line1 || !line2) return;
 
       // Initial states
-      gsap.set([title, line1, line2], { opacity: 0, y: 20 });
+      gsap.set([logo, title, line1, line2], { opacity: 0, y: 20 });
 
       // Entrance timeline
       const tl = gsap.timeline({ delay: 0.3 });
-      tl.to(title, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+      tl.to(logo, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+        .to(title, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
         .to(line1, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.3')
         .to(line2, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.2');
 
       // Scroll-driven parallax on text
-      gsap.to([title, line1, line2], {
+      gsap.to([logo, title, line1, line2], {
         yPercent: -50,
         ease: 'none',
         scrollTrigger: {
@@ -79,6 +83,7 @@ export default function HeroVideo() {
           loop
           preload="auto"
           onPlaying={handleVideoPlaying}
+          onCanPlay={handleVideoPlaying}
           src="/video/hero-video.mp4"
           className="absolute inset-0 w-full h-full object-cover"
         />
@@ -86,7 +91,7 @@ export default function HeroVideo() {
 
       {/* Seamless loader — matches bg, fades out when video plays */}
       <div
-        className={`absolute inset-0 bg-dark transition-opacity duration-1000 ease-out pointer-events-none ${
+        className={`absolute inset-0 z-[0] bg-dark transition-opacity duration-1000 ease-out pointer-events-none ${
           videoReady ? 'opacity-0' : 'opacity-100'
         }`}
       />
@@ -99,9 +104,20 @@ export default function HeroVideo() {
 
       {/* Centered text content */}
       <div className="absolute inset-0 z-[3] flex flex-col items-center justify-center text-center">
+        <div ref={logoRef}>
+          <Image
+            src="/images/logo/FormaStudioLogo.png"
+            alt="Forma Studio Logo"
+            width={160}
+            height={160}
+            className="w-20 h-20 md:w-[120px] md:h-[120px] lg:w-[160px] lg:h-[160px] object-contain"
+            priority
+          />
+        </div>
         <h1
           ref={titleRef}
-          className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] md:tracking-[0.2em] leading-[1.1] md:leading-normal text-cream"
+          className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] md:tracking-[0.2em] leading-[1.1] md:leading-normal text-cream -mt-2 md:-mt-3"
+          style={{ fontFamily: 'var(--font-sans)' }}
         >
           <span className="block md:inline whitespace-nowrap">
             F<span className="text-coral">O</span>RMA
