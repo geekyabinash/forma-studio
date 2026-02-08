@@ -12,9 +12,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<string, string> = {
-  primary: 'bg-coral text-cream hover:brightness-110 transition-all duration-300',
+  primary: 'bg-coral text-cream hover:brightness-110 hover:-translate-y-0.5 shadow-md hover:shadow-lg transition-all duration-300',
   secondary:
-    'border border-gold/40 text-cream hover:border-coral hover:text-coral transition-all duration-300',
+    'border border-gold/40 text-cream hover:border-coral hover:text-coral hover:-translate-y-0.5 transition-all duration-300',
   ghost: 'text-cream hover:text-coral transition-colors duration-300',
 };
 

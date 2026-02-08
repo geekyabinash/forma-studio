@@ -8,6 +8,7 @@ import SocialLinks from '@/components/ui/SocialLinks';
 const quickLinks = [
   { label: 'Projects', href: '/projects' },
   { label: 'Services', href: '/services' },
+  { label: 'Gallery', href: '/gallery' },
   { label: 'About', href: '/about' },
   { label: 'Careers', href: '/careers' },
   { label: 'Contact', href: '/contact' },
@@ -51,7 +52,7 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-cream/60 hover:text-coral transition-colors duration-300 py-1 font-sans text-sm"
+                  className="text-cream/80 hover:text-coral transition-colors duration-300 py-1 font-sans text-sm"
                 >
                   {link.label}
                 </Link>
@@ -71,7 +72,7 @@ export default function Footer() {
                   className="flex items-start gap-3"
                 >
                   <item.icon size={16} className="text-coral mt-0.5 shrink-0" />
-                  <span className="text-cream/60 font-sans text-sm">
+                  <span className="text-cream/80 font-sans text-sm">
                     {item.text}
                   </span>
                 </div>

@@ -43,13 +43,30 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="h-[50vh] md:h-[60vh] bg-dark relative flex items-center justify-center">
-        <SplitTextReveal
-          as="h1"
-          className="font-display text-5xl md:text-6xl lg:text-7xl text-cream"
-        >
-          Get in Touch
-        </SplitTextReveal>
+      <section className="h-[50vh] md:h-[60vh] bg-dark relative flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/contact-hero-user.jpg"
+            alt="Architectural workspace"
+            className="w-full h-full object-cover opacity-60"
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-dark/80 via-dark/40 to-dark/90" />
+        </div>
+
+        <div className="relative z-10 text-center">
+          <SplitTextReveal
+            as="h1"
+            className="font-display text-5xl md:text-6xl lg:text-7xl text-cream"
+            style={{ textShadow: '0 4px 12px rgba(0,0,0,0.5)' }}
+          >
+            Get in Touch
+          </SplitTextReveal>
+          <p className="font-sans font-light text-cream/90 text-lg mt-4 tracking-wider uppercase" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+            Let&apos;s build something exceptional
+          </p>
+        </div>
       </section>
 
       {/* Main Content */}
@@ -68,9 +85,9 @@ export default function ContactPage() {
                   type="text"
                   placeholder=" "
                   {...register('name')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
                 />
-                <label className="absolute left-0 top-3 font-sans font-light text-mid-gray transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
+                <label className="absolute left-0 top-3 font-sans font-normal text-mid-gray/80 transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
                   Name
                 </label>
                 {errors.name && (
@@ -84,9 +101,9 @@ export default function ContactPage() {
                   type="text"
                   placeholder=" "
                   {...register('email')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
                 />
-                <label className="absolute left-0 top-3 font-sans font-light text-mid-gray transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
+                <label className="absolute left-0 top-3 font-sans font-normal text-mid-gray/80 transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
                   Email
                 </label>
                 {errors.email && (
@@ -100,9 +117,9 @@ export default function ContactPage() {
                   type="tel"
                   placeholder=" "
                   {...register('phone')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 peer"
                 />
-                <label className="absolute left-0 top-3 font-sans font-light text-mid-gray transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
+                <label className="absolute left-0 top-3 font-sans font-normal text-mid-gray/80 transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
                   Phone
                 </label>
                 {errors.phone && (
@@ -114,7 +131,7 @@ export default function ContactPage() {
               <div className="relative">
                 <select
                   {...register('projectType')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 appearance-none cursor-pointer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 appearance-none cursor-pointer"
                 >
                   <option value="" disabled>
                     Project Type
@@ -135,7 +152,7 @@ export default function ContactPage() {
               <div className="relative">
                 <select
                   {...register('budget')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 appearance-none cursor-pointer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 appearance-none cursor-pointer"
                 >
                   <option value="" disabled>
                     Budget Range
@@ -157,9 +174,9 @@ export default function ContactPage() {
                   placeholder=" "
                   rows={4}
                   {...register('message')}
-                  className="w-full bg-transparent border-b border-gold/30 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 resize-none peer"
+                  className="w-full bg-transparent border-b border-gold/50 focus:border-coral py-3 font-sans font-light text-dark-gray outline-none transition-colors duration-300 resize-none peer"
                 />
-                <label className="absolute left-0 top-3 font-sans font-light text-mid-gray transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
+                <label className="absolute left-0 top-3 font-sans font-normal text-mid-gray/80 transition-all duration-300 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-coral peer-[:not(:placeholder-shown)]:-top-4 peer-[:not(:placeholder-shown)]:text-xs pointer-events-none">
                   Message
                 </label>
                 {errors.message && (

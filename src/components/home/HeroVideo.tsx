@@ -91,9 +91,8 @@ export default function HeroVideo() {
 
       {/* Seamless loader — matches bg, fades out when video plays */}
       <div
-        className={`absolute inset-0 z-[0] bg-dark transition-opacity duration-1000 ease-out pointer-events-none ${
-          videoReady ? 'opacity-0' : 'opacity-100'
-        }`}
+        className={`absolute inset-0 z-[0] bg-dark transition-opacity duration-1000 ease-out pointer-events-none ${videoReady ? 'opacity-0' : 'opacity-100'
+          }`}
       />
 
       {/* Gradient overlay */}
@@ -117,7 +116,7 @@ export default function HeroVideo() {
         <h1
           ref={titleRef}
           className="font-sans font-semibold text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] md:tracking-[0.2em] leading-[1.1] md:leading-normal text-cream -mt-2 md:-mt-3"
-          style={{ fontFamily: 'var(--font-sans)' }}
+          style={{ fontFamily: 'var(--font-sans)', textShadow: '0 4px 12px rgba(0,0,0,0.6)' }}
         >
           <span className="block md:inline whitespace-nowrap">
             F<span className="text-coral">O</span>RMA
@@ -136,12 +135,14 @@ export default function HeroVideo() {
         <p
           ref={tagline1Ref}
           className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-4 tracking-[0.15em]"
+          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
         >
           DESIGN WITH INTENT.
         </p>
         <p
           ref={tagline2Ref}
           className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-1 tracking-[0.15em]"
+          style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
         >
           BUILD WITH <span className="text-coral">PASSION.</span>
         </p>

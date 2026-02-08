@@ -64,7 +64,7 @@ export default function AboutPage() {
       <section className="relative h-[60vh] md:h-[70vh] overflow-hidden">
         <ParallaxLayer speed={0.2} className="absolute inset-0">
           <Image
-            src="/images/parallax/layer-1-bg.jpg"
+            src="/images/parallax/about-hero-user.jpg"
             alt="Forma Studio architectural portfolio backdrop"
             fill
             className="object-cover"
@@ -73,13 +73,14 @@ export default function AboutPage() {
         </ParallaxLayer>
 
         {/* Dark overlay */}
-        <div className="absolute inset-0 bg-dark/50 z-10" />
+        <div className="absolute inset-0 bg-dark/40 bg-gradient-to-b from-dark/60 via-transparent to-dark/40 z-10" />
 
         {/* Content */}
         <div className="absolute inset-0 z-20 flex items-center justify-center">
           <SplitTextReveal
             as="h1"
             className="font-display text-5xl md:text-6xl lg:text-7xl text-cream font-normal"
+            style={{ textShadow: '0 4px 12px rgba(0,0,0,0.6)' }}
           >
             About Forma Studio
           </SplitTextReveal>

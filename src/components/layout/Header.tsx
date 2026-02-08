@@ -53,7 +53,7 @@ export default function Header() {
                   href={item.href}
                   className={cn(
                     styles.navLink,
-                    'font-sans text-sm font-light tracking-wider uppercase text-cream/90 hover:text-cream transition-colors duration-300'
+                    'font-sans text-sm font-normal tracking-widest uppercase text-cream/90 hover:text-cream transition-colors duration-300'
                   )}
                 >
                   {item.label}
@@ -83,7 +83,7 @@ export default function Header() {
                   href={item.href}
                   className={cn(
                     styles.navLink,
-                    'font-sans text-sm font-light tracking-wider uppercase text-cream/90 hover:text-cream transition-colors duration-300'
+                    'font-sans text-sm font-normal tracking-widest uppercase text-cream/90 hover:text-cream transition-colors duration-300'
                   )}
                 >
                   {item.label}

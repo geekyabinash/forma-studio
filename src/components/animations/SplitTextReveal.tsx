@@ -10,6 +10,7 @@ interface SplitTextRevealProps {
   as?: 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
   splitType?: 'chars' | 'words';
   className?: string;
+  style?: React.CSSProperties;
   delay?: number;
 }
 
@@ -18,6 +19,7 @@ export default function SplitTextReveal({
   as: Tag = 'div',
   splitType = 'chars',
   className,
+  style,
   delay = 0,
 }: SplitTextRevealProps) {
   const elementRef = useRef<HTMLElement>(null);
@@ -57,7 +59,7 @@ export default function SplitTextReveal({
       <Tag
         ref={elementRef as React.RefObject<never>}
         className={className}
-        style={{ animation: 'fadeIn 0.6s ease forwards' }}
+        style={{ ...style, animation: 'fadeIn 0.6s ease forwards' }}
       >
         {children}
       </Tag>
@@ -65,7 +67,7 @@ export default function SplitTextReveal({
   }
 
   return (
-    <Tag ref={elementRef as React.RefObject<never>} className={className}>
+    <Tag ref={elementRef as React.RefObject<never>} className={className} style={style}>
       {children}
     </Tag>
   );
