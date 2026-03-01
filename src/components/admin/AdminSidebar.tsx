@@ -14,6 +14,7 @@ import {
   Phone,
   Settings,
   LogOut,
+  X,
 } from 'lucide-react'
 
 const navigation = [
@@ -28,24 +29,40 @@ const navigation = [
   { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
 
-export default function AdminSidebar() {
+interface AdminSidebarProps {
+  isOpen?: boolean
+  onClose?: () => void
+}
+
+export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
   const pathname = usePathname()
   const { user, signOut } = useAuth()
 
-  return (
-    <aside className="w-[280px] bg-[#1A2332] border-r border-[#F5E6D0]/10 flex flex-col">
+  const sidebarContent = (
+    <aside className="w-[280px] h-full bg-[#1A2332] border-r border-[#F5E6D0]/10 flex flex-col">
       {/* Logo/Header */}
-      <div className="p-6 border-b border-[#F5E6D0]/10">
-        <h1 className="font-cormorant text-3xl text-[#F5E6D0] mb-1">
-          Forma Studio
-        </h1>
-        <p className="font-josefin text-[#D4B896] text-xs tracking-wider uppercase">
-          Admin Panel
-        </p>
+      <div className="p-6 border-b border-[#F5E6D0]/10 flex items-center justify-between">
+        <div>
+          <h1 className="font-cormorant text-3xl text-[#F5E6D0] mb-1">
+            Forma Studio
+          </h1>
+          <p className="font-josefin text-[#D4B896] text-xs tracking-wider uppercase">
+            Admin Panel
+          </p>
+        </div>
+        {/* Close button - mobile only */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-2 rounded-lg text-[#F5E6D0]/60 hover:text-[#F5E6D0] hover:bg-[#F5E6D0]/5 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navigation.map((item) => {
           const isActive = pathname === item.href || (item.href !== '/admin' && pathname?.startsWith(item.href))
           const Icon = item.icon
@@ -54,6 +71,7 @@ export default function AdminSidebar() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={onClose}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg font-josefin text-sm
                 transition-all duration-300 group
                 ${
@@ -95,5 +113,34 @@ export default function AdminSidebar() {
         </button>
       </div>
     </aside>
+  )
+
+  return (
+    <>
+      {/* Desktop sidebar - static in flow */}
+      <div className="hidden md:block shrink-0">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile sidebar - slide-out drawer */}
+      <div className="md:hidden">
+        {/* Backdrop */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={onClose}
+          />
+        )}
+
+        {/* Drawer */}
+        <div
+          className={`fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out ${
+            isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          {sidebarContent}
+        </div>
+      </div>
+    </>
   )
 }

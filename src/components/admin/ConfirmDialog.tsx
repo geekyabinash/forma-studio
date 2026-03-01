@@ -32,7 +32,7 @@ export default function ConfirmDialog({
       />
 
       {/* Dialog */}
-      <div className="relative bg-[#1A2332] rounded-xl p-6 max-w-md w-full border border-[#F5E6D0]/10 shadow-2xl">
+      <div className="relative bg-[#1A2332] rounded-xl p-4 md:p-6 max-w-md w-[calc(100%-2rem)] md:w-full border border-[#F5E6D0]/10 shadow-2xl">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="p-3 bg-red-500/10 rounded-full">

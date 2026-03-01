@@ -100,12 +100,12 @@ export default function ProjectsListPage() {
         </div>
         <button
           onClick={() => router.push('/admin/projects/new')}
-          className="flex items-center gap-2 px-6 py-3 bg-[#D4654A] text-white rounded-lg
+          className="flex items-center gap-2 px-3 py-3 md:px-6 bg-[#D4654A] text-white rounded-lg
             font-josefin text-sm hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
             transition-all duration-300"
         >
           <Plus className="w-5 h-5" />
-          Add Project
+          <span className="hidden sm:inline">Add Project</span>
         </button>
       </div>
 
@@ -129,94 +129,153 @@ export default function ProjectsListPage() {
           </button>
         </div>
       ) : (
-        <div className="bg-[#1A2332] rounded-xl border border-[#F5E6D0]/10 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[#F5E6D0]/10">
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Title
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Category
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Status
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Year
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Location
-                </th>
-                <th className="text-center p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Featured
-                </th>
-                <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((project, index) => (
-                <tr
-                  key={project.id}
-                  className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors
-                    ${index === projects.length - 1 ? 'border-b-0' : ''}`}
-                >
-                  <td className="p-4 font-josefin text-[#F5E6D0]">
-                    {project.title}
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
-                        ${categoryBadgeColors[project.category] || 'bg-gray-500/20 text-gray-400'}`}
-                    >
-                      {project.category}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
-                        ${statusBadgeColors[project.status] || 'bg-gray-500/20 text-gray-400'}`}
-                    >
-                      {project.status}
-                    </span>
-                  </td>
-                  <td className="p-4 font-josefin text-[#D4B896] text-sm">
-                    {project.year}
-                  </td>
-                  <td className="p-4 font-josefin text-[#D4B896] text-sm">
-                    {project.location}
-                  </td>
-                  <td className="p-4 text-center">
-                    {project.featured && (
-                      <Star className="w-4 h-4 text-[#D4B896] fill-[#D4B896] mx-auto" />
-                    )}
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={() => router.push(`/admin/projects/${project.id}`)}
-                        className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
-                          rounded-lg transition-all duration-300"
-                        title="Edit"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setDeleteId(project.id)}
-                        className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
-                          rounded-lg transition-all duration-300"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        <div>
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-[#1A2332] rounded-xl border border-[#F5E6D0]/10 overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#F5E6D0]/10">
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Title
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Category
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Status
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Year
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Location
+                  </th>
+                  <th className="text-center p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Featured
+                  </th>
+                  <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {projects.map((project, index) => (
+                  <tr
+                    key={project.id}
+                    className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors
+                      ${index === projects.length - 1 ? 'border-b-0' : ''}`}
+                  >
+                    <td className="p-4 font-josefin text-[#F5E6D0]">
+                      {project.title}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
+                          ${categoryBadgeColors[project.category] || 'bg-gray-500/20 text-gray-400'}`}
+                      >
+                        {project.category}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
+                          ${statusBadgeColors[project.status] || 'bg-gray-500/20 text-gray-400'}`}
+                      >
+                        {project.status}
+                      </span>
+                    </td>
+                    <td className="p-4 font-josefin text-[#D4B896] text-sm">
+                      {project.year}
+                    </td>
+                    <td className="p-4 font-josefin text-[#D4B896] text-sm">
+                      {project.location}
+                    </td>
+                    <td className="p-4 text-center">
+                      {project.featured && (
+                        <Star className="w-4 h-4 text-[#D4B896] fill-[#D4B896] mx-auto" />
+                      )}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => router.push(`/admin/projects/${project.id}`)}
+                          className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                            rounded-lg transition-all duration-300"
+                          title="Edit"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteId(project.id)}
+                          className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                            rounded-lg transition-all duration-300"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card List */}
+          <div className="md:hidden space-y-3">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="bg-[#1A2332] rounded-xl p-4 border border-[#F5E6D0]/10"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-josefin text-[#F5E6D0] font-medium truncate">
+                      {project.title}
+                    </h3>
+                    <p className="font-josefin text-[#D4B896] text-sm mt-0.5">
+                      {project.location} · {project.year}
+                    </p>
+                  </div>
+                  {project.featured && (
+                    <Star className="w-4 h-4 text-[#D4B896] fill-[#D4B896] shrink-0 ml-2" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
+                      ${categoryBadgeColors[project.category] || 'bg-gray-500/20 text-gray-400'}`}
+                  >
+                    {project.category}
+                  </span>
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full font-josefin text-xs font-medium capitalize
+                      ${statusBadgeColors[project.status] || 'bg-gray-500/20 text-gray-400'}`}
+                  >
+                    {project.status}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 pt-3 border-t border-[#F5E6D0]/10">
+                  <button
+                    onClick={() => router.push(`/admin/projects/${project.id}`)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                      rounded-lg transition-all duration-300 font-josefin text-sm"
+                  >
+                    <Edit className="w-4 h-4" />
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setDeleteId(project.id)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                      rounded-lg transition-all duration-300 font-josefin text-sm"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

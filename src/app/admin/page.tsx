@@ -78,7 +78,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 mb-8">
         {stats.map((stat) => {
           const Icon = stat.icon
           return (
@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
         <h2 className="font-cormorant text-2xl text-[#F5E6D0] mb-4">
           Quick Actions
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
           <a
             href="/admin/projects/new"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10

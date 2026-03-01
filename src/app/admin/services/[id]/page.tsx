@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { ArrowLeft, Plus, X } from 'lucide-react'
+import { ArrowLeft, Plus, X, Eye, EyeOff } from 'lucide-react'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { toast } from 'sonner'
 import { serviceSchema, type ServiceFormValues } from '@/lib/schemas'
@@ -19,6 +19,7 @@ export default function EditServicePage() {
   const serviceId = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
   const [formData, setFormData] = useState<ServiceFormValues>({
     title: '',
     slug: '',
@@ -162,7 +163,8 @@ export default function EditServicePage() {
       {/* Split View: Form + Preview */}
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Left: Form */}
-        <div className="bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10">
+        <div className={`bg-[#1A2332] rounded-xl p-4 md:p-6 border border-[#F5E6D0]/10
+          ${showPreview ? 'hidden lg:block' : 'block'}`}>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div>
@@ -375,7 +377,8 @@ export default function EditServicePage() {
         </div>
 
         {/* Right: Live Preview */}
-        <div className="bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10 sticky top-8 h-fit">
+        <div className={`bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10 lg:sticky lg:top-8 h-fit
+          ${showPreview ? 'block' : 'hidden lg:block'}`}>
           <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-4">
             Live Preview
           </h3>
@@ -435,6 +438,19 @@ export default function EditServicePage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Preview Toggle */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 p-3 bg-[#1A2332] border-t border-[#F5E6D0]/10">
+        <button
+          type="button"
+          onClick={() => setShowPreview(!showPreview)}
+          className="w-full flex items-center justify-center gap-2 py-3 bg-[#D4654A] text-white rounded-lg
+            font-josefin text-sm hover:bg-[#D4654A]/90 transition-colors"
+        >
+          {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          {showPreview ? 'Back to Form' : 'Preview'}
+        </button>
       </div>
     </div>
   )

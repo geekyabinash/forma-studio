@@ -141,7 +141,7 @@ export default function InboxPage() {
       <div className="flex gap-2 mb-6 border-b border-[#F5E6D0]/10 pb-0.5">
         <button
           onClick={() => setTypeFilter('contact')}
-          className={`px-6 py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
+          className={`px-3 py-2 md:px-6 md:py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
             ${
               typeFilter === 'contact'
                 ? 'bg-[#1A2332] text-[#D4654A] border-b-2 border-[#D4654A]'
@@ -153,7 +153,7 @@ export default function InboxPage() {
         </button>
         <button
           onClick={() => setTypeFilter('career')}
-          className={`px-6 py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
+          className={`px-3 py-2 md:px-6 md:py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
             ${
               typeFilter === 'career'
                 ? 'bg-[#1A2332] text-[#D4654A] border-b-2 border-[#D4654A]'
@@ -168,7 +168,7 @@ export default function InboxPage() {
       {/* Status Filter */}
       <div className="flex items-center gap-3 mb-6">
         <Filter className="w-4 h-4 text-[#D4B896]" />
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {(['all', 'unread', 'read', 'archived'] as StatusFilter[]).map((status) => (
             <button
               key={status}
@@ -204,90 +204,156 @@ export default function InboxPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-[#1A2332] rounded-xl border border-[#F5E6D0]/10 overflow-hidden">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-[#F5E6D0]/10">
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Date
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Name
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  {typeFilter === 'contact' ? 'Project Type' : 'Position'}
-                </th>
-                <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Status
-                </th>
-                <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredSubmissions.map((submission, index) => (
-                <tr
-                  key={submission.id}
-                  className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors cursor-pointer
-                    ${index === filteredSubmissions.length - 1 ? 'border-b-0' : ''}`}
-                  onClick={() => setSelectedSubmission(submission)}
-                >
-                  <td className="p-4 font-josefin text-[#D4B896] text-sm">
-                    {formatDate(submission.submitted_at)}
-                  </td>
-                  <td className="p-4 font-josefin text-[#F5E6D0]">
-                    {submission.data.name}
-                  </td>
-                  <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
-                    {typeFilter === 'contact'
-                      ? submission.data.projectType?.replace('-', ' ')
-                      : submission.data.position}
-                  </td>
-                  <td className="p-4">
-                    <span
-                      className={`inline-flex px-3 py-1 rounded-full font-josefin text-xs
-                      ${
-                        submission.status === 'unread'
-                          ? 'bg-blue-500/10 text-blue-400'
-                          : submission.status === 'read'
-                          ? 'bg-green-500/10 text-green-400'
-                          : 'bg-gray-500/10 text-gray-400'
-                      }`}
-                    >
-                      {submission.status}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center justify-end gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setSelectedSubmission(submission)
-                        }}
-                        className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
-                          rounded-lg transition-all duration-300"
-                        title="View"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setDeleteId(submission.id)
-                        }}
-                        className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
-                          rounded-lg transition-all duration-300"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
+        <div>
+          {/* Desktop Table */}
+          <div className="hidden md:block bg-[#1A2332] rounded-xl border border-[#F5E6D0]/10 overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#F5E6D0]/10">
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Date
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Name
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    {typeFilter === 'contact' ? 'Project Type' : 'Position'}
+                  </th>
+                  <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Status
+                  </th>
+                  <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                    Actions
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredSubmissions.map((submission, index) => (
+                  <tr
+                    key={submission.id}
+                    className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors cursor-pointer
+                      ${index === filteredSubmissions.length - 1 ? 'border-b-0' : ''}`}
+                    onClick={() => setSelectedSubmission(submission)}
+                  >
+                    <td className="p-4 font-josefin text-[#D4B896] text-sm">
+                      {formatDate(submission.submitted_at)}
+                    </td>
+                    <td className="p-4 font-josefin text-[#F5E6D0]">
+                      {submission.data.name}
+                    </td>
+                    <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
+                      {typeFilter === 'contact'
+                        ? submission.data.projectType?.replace('-', ' ')
+                        : submission.data.position}
+                    </td>
+                    <td className="p-4">
+                      <span
+                        className={`inline-flex px-3 py-1 rounded-full font-josefin text-xs
+                        ${
+                          submission.status === 'unread'
+                            ? 'bg-blue-500/10 text-blue-400'
+                            : submission.status === 'read'
+                            ? 'bg-green-500/10 text-green-400'
+                            : 'bg-gray-500/10 text-gray-400'
+                        }`}
+                      >
+                        {submission.status}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setSelectedSubmission(submission)
+                          }}
+                          className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                            rounded-lg transition-all duration-300"
+                          title="View"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setDeleteId(submission.id)
+                          }}
+                          className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                            rounded-lg transition-all duration-300"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card List */}
+          <div className="md:hidden space-y-3">
+            {filteredSubmissions.map((submission) => (
+              <div
+                key={submission.id}
+                onClick={() => setSelectedSubmission(submission)}
+                className="bg-[#1A2332] rounded-xl p-4 border border-[#F5E6D0]/10 active:bg-[#F5E6D0]/5 transition-colors cursor-pointer"
+              >
+                <div className="flex items-start justify-between mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-josefin text-[#F5E6D0] font-medium truncate">
+                      {submission.data.name}
+                    </h3>
+                    <p className="font-josefin text-[#D4B896] text-xs mt-0.5">
+                      {formatDate(submission.submitted_at)}
+                    </p>
+                  </div>
+                  <span
+                    className={`inline-flex px-2 py-0.5 rounded-full font-josefin text-xs shrink-0 ml-2
+                    ${
+                      submission.status === 'unread'
+                        ? 'bg-blue-500/10 text-blue-400'
+                        : submission.status === 'read'
+                        ? 'bg-green-500/10 text-green-400'
+                        : 'bg-gray-500/10 text-gray-400'
+                    }`}
+                  >
+                    {submission.status}
+                  </span>
+                </div>
+                <p className="font-josefin text-[#D4B896] text-sm capitalize truncate">
+                  {typeFilter === 'contact'
+                    ? submission.data.projectType?.replace('-', ' ')
+                    : submission.data.position}
+                </p>
+                <div className="flex items-center gap-2 pt-3 mt-3 border-t border-[#F5E6D0]/10">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setSelectedSubmission(submission)
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                      rounded-lg transition-all duration-300 font-josefin text-sm"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setDeleteId(submission.id)
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                      rounded-lg transition-all duration-300 font-josefin text-sm"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -299,7 +365,7 @@ export default function InboxPage() {
             onClick={() => setSelectedSubmission(null)}
           />
 
-          <div className="relative bg-[#1A2332] rounded-xl p-6 max-w-2xl w-full border border-[#F5E6D0]/10 shadow-2xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-[#1A2332] rounded-xl p-4 md:p-6 max-w-2xl w-full border border-[#F5E6D0]/10 shadow-2xl max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-cormorant text-2xl text-[#F5E6D0]">

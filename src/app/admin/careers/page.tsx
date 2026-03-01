@@ -128,10 +128,10 @@ export default function CareersAdminPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-[#F5E6D0]/10 pb-0.5">
+      <div className="flex flex-wrap gap-2 mb-6 border-b border-[#F5E6D0]/10 pb-0.5">
         <button
           onClick={() => setActiveTab('positions')}
-          className={`px-6 py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
+          className={`px-3 py-2 md:px-6 md:py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
             ${
               activeTab === 'positions'
                 ? 'bg-[#1A2332] text-[#D4654A] border-b-2 border-[#D4654A]'
@@ -143,7 +143,7 @@ export default function CareersAdminPage() {
         </button>
         <button
           onClick={() => setActiveTab('benefits')}
-          className={`px-6 py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
+          className={`px-3 py-2 md:px-6 md:py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
             ${
               activeTab === 'benefits'
                 ? 'bg-[#1A2332] text-[#D4654A] border-b-2 border-[#D4654A]'
@@ -155,7 +155,7 @@ export default function CareersAdminPage() {
         </button>
         <button
           onClick={() => setActiveTab('values')}
-          className={`px-6 py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
+          className={`px-3 py-2 md:px-6 md:py-3 font-josefin text-sm transition-all duration-300 rounded-t-lg
             ${
               activeTab === 'values'
                 ? 'bg-[#1A2332] text-[#D4654A] border-b-2 border-[#D4654A]'
@@ -203,51 +203,110 @@ export default function CareersAdminPage() {
                 </button>
               </div>
             ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[#F5E6D0]/10">
-                    <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Title
-                    </th>
-                    <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Department
-                    </th>
-                    <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Type
-                    </th>
-                    <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Location
-                    </th>
-                    <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Status
-                    </th>
-                    <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {positions.map((position, index) => (
-                    <tr
+              <div>
+                {/* Desktop Table */}
+                <table className="w-full hidden md:table">
+                  <thead>
+                    <tr className="border-b border-[#F5E6D0]/10">
+                      <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Title
+                      </th>
+                      <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Department
+                      </th>
+                      <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Type
+                      </th>
+                      <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Location
+                      </th>
+                      <th className="text-left p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Status
+                      </th>
+                      <th className="text-right p-4 font-josefin text-[#D4B896] text-sm font-medium">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {positions.map((position, index) => (
+                      <tr
+                        key={position.id}
+                        className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors
+                          ${index === positions.length - 1 ? 'border-b-0' : ''}`}
+                      >
+                        <td className="p-4 font-josefin text-[#F5E6D0]">
+                          {position.title}
+                        </td>
+                        <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
+                          {position.department?.replace('-', ' ') ?? ''}
+                        </td>
+                        <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
+                          {position.employment_type?.replace('-', ' ') ?? ''}
+                        </td>
+                        <td className="p-4 font-josefin text-[#D4B896] text-sm">
+                          {position.location}
+                        </td>
+                        <td className="p-4">
+                          <span
+                            className={`inline-flex px-3 py-1 rounded-full font-josefin text-xs
+                            ${
+                              position.is_active
+                                ? 'bg-green-500/10 text-green-400'
+                                : 'bg-gray-500/10 text-gray-400'
+                            }`}
+                          >
+                            {position.is_active ? 'Active' : 'Inactive'}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() =>
+                                router.push(`/admin/careers/positions/${position.id}`)
+                              }
+                              className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                                rounded-lg transition-all duration-300"
+                              title="Edit"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => {
+                                setDeleteId(position.id)
+                                setDeleteType('positions')
+                              }}
+                              className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                                rounded-lg transition-all duration-300"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {/* Mobile Card List */}
+                <div className="md:hidden space-y-3 p-4">
+                  {positions.map((position) => (
+                    <div
                       key={position.id}
-                      className={`border-b border-[#F5E6D0]/5 hover:bg-[#F5E6D0]/5 transition-colors
-                        ${index === positions.length - 1 ? 'border-b-0' : ''}`}
+                      className="bg-[#141B2B] rounded-xl p-4 border border-[#F5E6D0]/10"
                     >
-                      <td className="p-4 font-josefin text-[#F5E6D0]">
-                        {position.title}
-                      </td>
-                      <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
-                        {position.department?.replace('-', ' ') ?? ''}
-                      </td>
-                      <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
-                        {position.employment_type?.replace('-', ' ') ?? ''}
-                      </td>
-                      <td className="p-4 font-josefin text-[#D4B896] text-sm">
-                        {position.location}
-                      </td>
-                      <td className="p-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-josefin text-[#F5E6D0] font-medium truncate">
+                            {position.title}
+                          </h3>
+                          <p className="font-josefin text-[#D4B896] text-sm mt-0.5 capitalize">
+                            {position.department?.replace('-', ' ') ?? ''} · {position.employment_type?.replace('-', ' ') ?? ''}
+                          </p>
+                        </div>
                         <span
-                          className={`inline-flex px-3 py-1 rounded-full font-josefin text-xs
+                          className={`inline-flex px-2 py-0.5 rounded-full font-josefin text-xs shrink-0 ml-2
                           ${
                             position.is_active
                               ? 'bg-green-500/10 text-green-400'
@@ -256,36 +315,35 @@ export default function CareersAdminPage() {
                         >
                           {position.is_active ? 'Active' : 'Inactive'}
                         </span>
-                      </td>
-                      <td className="p-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() =>
-                              router.push(`/admin/careers/positions/${position.id}`)
-                            }
-                            className="p-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
-                              rounded-lg transition-all duration-300"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => {
-                              setDeleteId(position.id)
-                              setDeleteType('positions')
-                            }}
-                            className="p-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
-                              rounded-lg transition-all duration-300"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
+                      </div>
+                      <p className="font-josefin text-[#D4B896] text-sm mb-3">
+                        {position.location}
+                      </p>
+                      <div className="flex items-center gap-2 pt-3 border-t border-[#F5E6D0]/10">
+                        <button
+                          onClick={() => router.push(`/admin/careers/positions/${position.id}`)}
+                          className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-[#D4654A] hover:bg-[#D4654A]/10
+                            rounded-lg transition-all duration-300 font-josefin text-sm"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDeleteId(position.id)
+                            setDeleteType('positions')
+                          }}
+                          className="flex-1 flex items-center justify-center gap-2 py-2 text-[#D4B896] hover:text-red-400 hover:bg-red-400/10
+                            rounded-lg transition-all duration-300 font-josefin text-sm"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -343,7 +401,7 @@ export default function CareersAdminPage() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() =>
                             router.push(`/admin/careers/benefits/${benefit.id}`)
@@ -417,7 +475,7 @@ export default function CareersAdminPage() {
                       <h3 className="font-cormorant text-lg text-[#F5E6D0] flex-1">
                         {value.title}
                       </h3>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() =>
                             router.push(`/admin/careers/values/${value.id}`)

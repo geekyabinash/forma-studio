@@ -95,25 +95,25 @@ export default function GalleryAdminPage() {
         </div>
         <button
           onClick={() => router.push('/admin/gallery/new')}
-          className="flex items-center gap-2 px-6 py-3 bg-[#D4654A] text-white rounded-lg
+          className="flex items-center gap-2 px-3 py-3 md:px-6 bg-[#D4654A] text-white rounded-lg
             font-josefin text-sm hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
             transition-all duration-300"
         >
           <Plus className="w-5 h-5" />
-          Upload Image
+          <span className="hidden sm:inline">Upload Image</span>
         </button>
       </div>
 
       {/* Filter */}
       <div className="flex items-center gap-3 mb-6">
         <Filter className="w-4 h-4 text-[#D4B896]" />
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {(['all', 'architecture', 'interiors', 'details', 'process'] as CategoryFilter[]).map(
             (cat) => (
               <button
                 key={cat}
                 onClick={() => setCategoryFilter(cat)}
-                className={`px-4 py-2 rounded-lg font-josefin text-sm transition-all duration-300
+                className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-josefin text-xs md:text-sm transition-all duration-300
                   ${
                     categoryFilter === cat
                       ? 'bg-[#D4654A] text-white shadow-lg shadow-[#D4654A]/20'
@@ -181,7 +181,7 @@ export default function GalleryAdminPage() {
               </div>
 
               {/* Actions */}
-              <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="absolute top-2 right-2 flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => router.push(`/admin/gallery/${item.id}`)}
                   className="p-2 bg-[#1A2332]/90 backdrop-blur-sm text-[#D4B896] hover:text-[#D4654A]
