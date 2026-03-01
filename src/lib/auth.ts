@@ -6,6 +6,7 @@ import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {
@@ -13,29 +14,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null
+        try {
+          if (!credentials?.email || !credentials?.password) return null
 
-        const [user] = await db
-          .select()
-          .from(users)
-          .where(eq(users.email, credentials.email as string))
-          .limit(1)
+          const [user] = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, credentials.email as string))
+            .limit(1)
 
-        if (!user) return null
+          if (!user) return null
 
-        const passwordMatch = await bcrypt.compare(
-          credentials.password as string,
-          user.passwordHash
-        )
+          const passwordMatch = await bcrypt.compare(
+            credentials.password as string,
+            user.passwordHash
+          )
 
-        if (!passwordMatch) return null
+          if (!passwordMatch) return null
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          mfaPending: user.mfaEnabled ?? false,
-          mfaMethod: user.mfaMethod ?? null,
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            mfaPending: user.mfaEnabled ?? false,
+            mfaMethod: user.mfaMethod ?? null,
+          }
+        } catch (error) {
+          console.error('Auth authorize error:', error)
+          return null
         }
       },
     }),
@@ -43,6 +49,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/login',
+    error: '/error',
   },
   callbacks: {
     async jwt({ token, user, trigger }) {
