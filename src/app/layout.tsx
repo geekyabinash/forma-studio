@@ -1,13 +1,6 @@
 import type { Metadata } from 'next';
 import { cormorant, josefin, dancingScript } from '@/styles/fonts';
 import './globals.css';
-import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
-import PageTransitionProvider from '@/components/providers/PageTransitionProvider';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-
-import CustomCursor from '@/components/animations/CustomCursor';
-import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
 
 export const metadata: Metadata = {
   title: {
@@ -33,17 +26,7 @@ export default function RootLayout({
       lang="en"
       className={`${cormorant.variable} ${josefin.variable} ${dancingScript.variable}`}
     >
-      <body>
-        <SmoothScrollProvider>
-          <CustomCursor />
-          <Header />
-          <PageTransitionProvider>
-            <main>{children}</main>
-          </PageTransitionProvider>
-          <Footer />
-          <WhatsAppFloat />
-        </SmoothScrollProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

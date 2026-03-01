@@ -1,0 +1,276 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useRouter, useParams } from 'next/navigation'
+import { ArrowLeft } from 'lucide-react'
+import ImageUploader from '@/components/admin/ImageUploader'
+import { toast } from 'sonner'
+import { galleryItemSchema, type GalleryItemValues } from '@/lib/schemas'
+
+export default function EditGalleryItemPage() {
+  const router = useRouter()
+  const params = useParams()
+  const itemId = params.id as string
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState<GalleryItemValues>({
+    image_url: '',
+    image_alt: '',
+    image_width: 0,
+    image_height: 0,
+    caption: '',
+    category: 'architecture',
+    project_slug: '',
+  })
+
+  useEffect(() => {
+    const fetchItem = async () => {
+      try {
+        const response = await fetch(`/api/admin/gallery/${itemId}`)
+        if (!response.ok) throw new Error('Failed to fetch gallery item')
+
+        const { item } = await response.json()
+        setFormData({
+          image_url: item.imageUrl || '',
+          image_alt: item.imageAlt || '',
+          image_width: item.imageWidth || 0,
+          image_height: item.imageHeight || 0,
+          caption: item.caption || '',
+          category: item.category || 'architecture',
+          project_slug: item.projectSlug || '',
+        })
+      } catch (error) {
+        console.error('Fetch gallery item error:', error)
+        toast.error('Failed to load gallery item')
+        router.push('/admin/gallery')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (itemId) {
+      fetchItem()
+    }
+  }, [itemId, router])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSaving(true)
+
+    try {
+      const validated = galleryItemSchema.parse(formData)
+
+      const response = await fetch(`/api/admin/gallery/${itemId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(validated),
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update gallery item')
+      }
+
+      toast.success('Image updated successfully')
+      router.push('/admin/gallery')
+    } catch (error) {
+      console.error('Update gallery item error:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to update image')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#D4654A] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="font-josefin text-[#D4B896]">Loading image...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-8">
+        <button
+          onClick={() => router.back()}
+          className="p-2 hover:bg-[#F5E6D0]/10 rounded-lg transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5 text-[#F5E6D0]" />
+        </button>
+        <div>
+          <h1 className="font-cormorant text-4xl md:text-5xl text-[#F5E6D0]">
+            Edit Image
+          </h1>
+          <p className="font-josefin text-[#D4B896] text-sm mt-1">
+            Update image details
+          </p>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div className="grid lg:grid-cols-2 gap-8">
+        {/* Left: Form */}
+        <div className="bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Image Upload */}
+            <div>
+              <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
+                Image *
+              </label>
+              <ImageUploader
+                endpoint="galleryImage"
+                currentImage={formData.image_url}
+                onUploadComplete={(url, width, height) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    image_url: url,
+                    image_width: width || 0,
+                    image_height: height || 0,
+                  }))
+                }}
+              />
+            </div>
+
+            {/* Image Alt Text */}
+            <div>
+              <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
+                Alt Text (Optional)
+              </label>
+              <input
+                type="text"
+                value={formData.image_alt}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, image_alt: e.target.value }))
+                }
+                className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                  font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
+                  focus:outline-none focus:border-[#D4654A] transition-colors"
+                placeholder="Descriptive text for accessibility"
+              />
+            </div>
+
+            {/* Caption */}
+            <div>
+              <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
+                Caption (Optional)
+              </label>
+              <textarea
+                value={formData.caption}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, caption: e.target.value }))
+                }
+                rows={3}
+                className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                  font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
+                  focus:outline-none focus:border-[#D4654A] transition-colors resize-none"
+                placeholder="Brief description of the image..."
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
+                Category
+              </label>
+              <select
+                value={formData.category}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category: e.target.value as any,
+                  }))
+                }
+                className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                  font-josefin text-[#F5E6D0] focus:outline-none focus:border-[#D4654A] transition-colors"
+              >
+                <option value="architecture">Architecture</option>
+                <option value="interiors">Interiors</option>
+                <option value="details">Details</option>
+                <option value="process">Process</option>
+              </select>
+            </div>
+
+            {/* Project Link */}
+            <div>
+              <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
+                Project Slug (Optional)
+              </label>
+              <input
+                type="text"
+                value={formData.project_slug}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, project_slug: e.target.value }))
+                }
+                className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                  font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
+                  focus:outline-none focus:border-[#D4654A] transition-colors"
+                placeholder="e.g., urban-villa-residence"
+              />
+              <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                Link this image to a specific project
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-4 border-t border-[#F5E6D0]/10">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="flex-1 px-6 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                  font-josefin text-[#F5E6D0] text-sm hover:bg-[#F5E6D0]/5
+                  hover:border-[#F5E6D0]/40 transition-all duration-300"
+                disabled={saving}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
+                  hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
+                  transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={saving || !formData.image_url}
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {/* Right: Preview */}
+        <div className="bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10 sticky top-8 h-fit">
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-4">Preview</h3>
+          {formData.image_url ? (
+            <div className="space-y-4">
+              <div className="aspect-square relative overflow-hidden rounded-xl border border-[#F5E6D0]/10">
+                <img
+                  src={formData.image_url}
+                  alt={formData.image_alt || 'Preview'}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {formData.caption && (
+                <p className="font-josefin text-[#D4B896] text-sm">{formData.caption}</p>
+              )}
+              {formData.category && (
+                <span className="inline-block px-3 py-1 bg-[#D4654A]/10 text-[#D4654A] rounded-full text-xs font-josefin capitalize">
+                  {formData.category}
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="aspect-square flex items-center justify-center rounded-xl border-2 border-dashed border-[#F5E6D0]/20">
+              <p className="font-josefin text-[#D4B896]/60 text-sm">
+                No image uploaded
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

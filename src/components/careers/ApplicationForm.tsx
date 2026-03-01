@@ -8,13 +8,14 @@ import SectionHeading from '@/components/ui/SectionHeading';
 import Button from '@/components/ui/Button';
 import { careerApplicationSchema } from '@/lib/schemas';
 import type { CareerApplicationValues } from '@/lib/schemas';
-import { positions } from '@/data/careers';
+import type { JobPosition } from '@/types';
 
 interface ApplicationFormProps {
   selectedPosition: string;
+  positions: JobPosition[];
 }
 
-export default function ApplicationForm({ selectedPosition }: ApplicationFormProps) {
+export default function ApplicationForm({ selectedPosition, positions }: ApplicationFormProps) {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const {

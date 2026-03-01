@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { careerApplicationSchema } from '@/lib/schemas';
+import { db } from '@/lib/db';
+import { formSubmissions } from '@/lib/db/schema';
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,7 +15,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // TODO: Send email notification via SendGrid/Resend or forward to HR system
+    // Save to database
+    try {
+      await db.insert(formSubmissions).values({
+        type: 'career',
+        data: result.data,
+        status: 'unread',
+      });
+    } catch (dbError) {
+      console.error('Database save error:', dbError);
+      // Continue even if DB save fails - don't block user
+    }
+
+    // TODO: Send email notification via Resend
     console.log('Career application submission:', result.data);
 
     return NextResponse.json({
