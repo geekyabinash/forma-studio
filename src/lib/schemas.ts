@@ -163,3 +163,13 @@ export const contactInfoSchema = z.object({
 });
 
 export type ContactInfoFormValues = z.infer<typeof contactInfoSchema>;
+
+// ========== Admin: Navigation Settings ==========
+export const navigationSettingsSchema = z.object({
+  visibility: z.record(
+    z.enum(['/projects', '/services', '/gallery', '/about', '/careers', '/contact']),
+    z.boolean()
+  ),
+});
+
+export type NavigationSettingsValues = z.infer<typeof navigationSettingsSchema>;

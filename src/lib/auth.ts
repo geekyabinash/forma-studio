@@ -2,7 +2,7 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
-import { users } from '@/lib/db/schema'
+import { users, navigationSettings } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -90,6 +90,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (isAdminRoute && !isLoggedIn) {
         return Response.redirect(new URL('/login', nextUrl))
+      }
+
+      // Check navigation visibility for public toggleable routes
+      const toggleableRoutes = ['/projects', '/services', '/gallery', '/about', '/careers', '/contact']
+      const matchedRoute = toggleableRoutes.find(
+        (route) => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + '/')
+      )
+
+      if (matchedRoute && !isAdminRoute) {
+        try {
+          const [settings] = await db.select().from(navigationSettings).limit(1)
+          const visibility = settings?.visibility as Record<string, boolean> | undefined
+          if (visibility && visibility[matchedRoute] === false) {
+            return Response.redirect(new URL('/', nextUrl))
+          }
+        } catch (error) {
+          // Fail-open: if DB is unavailable, allow access
+          console.error('Navigation visibility check failed:', error)
+        }
       }
 
       return true

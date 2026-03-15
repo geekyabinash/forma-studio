@@ -313,3 +313,22 @@ export const contactInfo = pgTable('contact_info', {
     .defaultNow()
     .$onUpdate(() => new Date()),
 })
+
+// ---- Navigation Settings Table (single-row) ----
+
+export const navigationSettings = pgTable('navigation_settings', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  visibility: jsonb('visibility')
+    .$type<Record<string, boolean>>()
+    .default({
+      '/projects': true,
+      '/services': true,
+      '/gallery': true,
+      '/about': true,
+      '/careers': true,
+      '/contact': true,
+    }),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+})

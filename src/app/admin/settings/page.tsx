@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 import {
   Lock,
   Shield,
@@ -15,6 +16,8 @@ import {
   Copy,
   Check,
   KeyRound,
+  PanelTop,
+  ChevronRight,
 } from 'lucide-react'
 
 type MfaStep = 'idle' | 'choose-method' | 'setup-email' | 'setup-totp' | 'verify' | 'backup-codes'
@@ -769,6 +772,29 @@ export default function SettingsPage() {
           </div>
         )}
       </div>
+
+      {/* Navigation Settings Card */}
+      <Link
+        href="/admin/settings/navigation"
+        className="block bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10 mt-6 group hover:border-[#D4654A]/30 transition-all duration-300"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-[#D4654A]/10 rounded-lg">
+              <PanelTop className="w-5 h-5 text-[#D4654A]" />
+            </div>
+            <div>
+              <h2 className="font-cormorant text-2xl text-[#F5E6D0]">
+                Navigation
+              </h2>
+              <p className="font-josefin text-[#D4B896]/60 text-xs">
+                Control which pages are visible to visitors
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-[#D4B896]/40 group-hover:text-[#D4654A] transition-colors" />
+        </div>
+      </Link>
     </div>
   )
 }

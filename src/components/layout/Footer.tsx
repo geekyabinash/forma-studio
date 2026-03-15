@@ -1,18 +1,8 @@
-'use client';
-
 import Link from 'next/link';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import SocialLinks from '@/components/ui/SocialLinks';
-
-const quickLinks = [
-  { label: 'Projects', href: '/projects' },
-  { label: 'Services', href: '/services' },
-  { label: 'Gallery', href: '/gallery' },
-  { label: 'About', href: '/about' },
-  { label: 'Careers', href: '/careers' },
-  { label: 'Contact', href: '/contact' },
-];
+import type { NavItem } from '@/types';
 
 const contactInfo = [
   {
@@ -29,7 +19,12 @@ const contactInfo = [
   },
 ];
 
-export default function Footer() {
+interface FooterProps {
+  quickLinks: NavItem[];
+}
+
+export default function Footer({ quickLinks }: FooterProps) {
+
   return (
     <footer className="bg-dark py-20 px-6">
       <div className="max-w-7xl mx-auto">

@@ -125,7 +125,7 @@ export default function HeroVideo() {
             STU
             <span
               className="text-coral inline-block -ml-[0.05em] mr-[0.15em]"
-              style={{ transform: 'scaleX(-1)', letterSpacing: '0em' }}
+              style={{ letterSpacing: '0em' }}
             >
               D
             </span>

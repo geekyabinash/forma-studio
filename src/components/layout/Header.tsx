@@ -5,12 +5,16 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { navItems } from '@/data/navigation';
 import Logo from '@/components/ui/Logo';
 import MobileMenu from '@/components/layout/MobileMenu';
 import styles from '@/styles/animations.module.css';
+import type { NavItem } from '@/types';
 
-export default function Header() {
+interface HeaderProps {
+  visibleItems: NavItem[];
+}
+
+export default function Header({ visibleItems }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -22,9 +26,8 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const leftLinks = navItems.filter((item) => item.position === 'left');
-  const rightLinks = navItems.filter((item) => item.position === 'right');
+  const leftLinks = visibleItems.filter((item) => item.position === 'left');
+  const rightLinks = visibleItems.filter((item) => item.position === 'right');
 
   return (
     <>
@@ -102,8 +105,11 @@ export default function Header() {
           </button>
         </nav>
       </motion.header>
-
-      <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        visibleItems={visibleItems}
+      />
     </>
   );
 }

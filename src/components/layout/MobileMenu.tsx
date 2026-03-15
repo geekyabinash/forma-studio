@@ -4,12 +4,13 @@ import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { navItems } from '@/data/navigation';
 import SocialLinks from '@/components/ui/SocialLinks';
+import type { NavItem } from '@/types';
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
+  visibleItems: NavItem[];
 }
 
 const overlayVariants = {
@@ -27,7 +28,7 @@ const linkVariants = {
   }),
 };
 
-export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, visibleItems }: MobileMenuProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -91,7 +92,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
 
           {/* Nav links */}
           <div className="flex flex-col items-center justify-center h-full gap-8">
-            {navItems.map((item, i) => (
+            {visibleItems.map((item, i) => (
               <motion.div
                 key={item.href}
                 custom={i}
