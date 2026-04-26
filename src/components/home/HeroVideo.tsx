@@ -7,7 +7,20 @@ import { useVideoPlayback } from '@/hooks/useVideoPlayback';
 import ScrollIndicator from '@/components/ui/ScrollIndicator';
 import styles from '@/styles/animations.module.css';
 
-export default function HeroVideo() {
+interface HeroVideoProps {
+  videoUrl: string;
+  taglineLine1: string;
+  taglineLine2: string;
+}
+
+export default function HeroVideo({
+  videoUrl,
+  taglineLine1,
+  taglineLine2,
+}: HeroVideoProps) {
+  const tagline2Parts = taglineLine2.trim().split(/\s+/);
+  const tagline2Last = tagline2Parts.pop() ?? '';
+  const tagline2Lead = tagline2Parts.join(' ');
   const sectionRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
@@ -84,7 +97,7 @@ export default function HeroVideo() {
           preload="auto"
           onPlaying={handleVideoPlaying}
           onCanPlay={handleVideoPlaying}
-          src="/video/hero-video.mp4"
+          src={videoUrl}
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
@@ -137,14 +150,15 @@ export default function HeroVideo() {
           className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-4 tracking-[0.15em]"
           style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
         >
-          DESIGN WITH INTENT.
+          {taglineLine1}
         </p>
         <p
           ref={tagline2Ref}
           className="font-sans font-semibold text-xl md:text-2xl lg:text-3xl text-cream/90 mt-1 tracking-[0.15em]"
           style={{ textShadow: '0 2px 8px rgba(0,0,0,0.6)' }}
         >
-          BUILD WITH <span className="text-coral">PASSION.</span>
+          {tagline2Lead && <>{tagline2Lead} </>}
+          <span className="text-coral">{tagline2Last}</span>
         </p>
       </div>
 

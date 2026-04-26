@@ -154,6 +154,37 @@ export const aboutContentSchema = z.object({
 
 export type AboutContentFormValues = z.infer<typeof aboutContentSchema>;
 
+// ========== Admin: Home Content ==========
+const homeImageAssetSchema = z.object({
+  url: z.string().url('Image URL is required'),
+  alt: z.string().optional().default(''),
+  width: z.number().optional().default(0),
+  height: z.number().optional().default(0),
+});
+
+export const homeContentSchema = z.object({
+  hero_video_url: z.string().min(1, 'Hero video URL is required'),
+  hero_tagline_line1: z.string().min(1, 'Tagline line 1 is required'),
+  hero_tagline_line2: z.string().min(1, 'Tagline line 2 is required'),
+  parallax_label: z.string().min(1, 'Section label is required'),
+  parallax_image_bg: homeImageAssetSchema,
+  parallax_image_mid: homeImageAssetSchema,
+  parallax_image_fg: homeImageAssetSchema,
+  projects_count: z.number().min(0),
+  projects_count_label: z.string().min(1, 'Counter label is required'),
+  about_snippet_title: z.string().min(1, 'About title is required'),
+  about_snippet_body: z.string().min(1, 'About body is required'),
+  about_snippet_cta_text: z.string().min(1, 'CTA link text is required'),
+  about_snippet_image: homeImageAssetSchema,
+  featured_work_label: z.string().min(1, 'Featured work label is required'),
+  services_label: z.string().min(1, 'Services label is required'),
+  cta_heading: z.string().min(1, 'CTA heading is required'),
+  cta_subtitle: z.string().min(1, 'CTA subtitle is required'),
+  cta_button_text: z.string().min(1, 'CTA button text is required'),
+});
+
+export type HomeContentFormValues = z.infer<typeof homeContentSchema>;
+
 // ========== Admin: Contact Info ==========
 export const contactInfoSchema = z.object({
   address: z.string().min(1, 'Address is required'),

@@ -6,7 +6,17 @@ import ScrollReveal from '@/components/animations/ScrollReveal';
 import Button from '@/components/ui/Button';
 import styles from '@/styles/animations.module.css';
 
-export default function CTASection() {
+interface CTASectionProps {
+  heading: string;
+  subtitle: string;
+  buttonText: string;
+}
+
+export default function CTASection({
+  heading,
+  subtitle,
+  buttonText,
+}: CTASectionProps) {
   return (
     <section className="relative bg-dark py-32 md:py-40 px-6 overflow-hidden">
       {/* Gradient mesh background */}
@@ -19,17 +29,16 @@ export default function CTASection() {
           splitType="words"
           className="font-display text-3xl md:text-4xl lg:text-5xl text-cream font-normal"
         >
-          Let&apos;s build something remarkable.
+          {heading}
         </SplitTextReveal>
 
         <p className="font-sans font-light text-lg text-cream/70 mt-6">
-          Ready to transform your vision into reality? Let&apos;s start a
-          conversation.
+          {subtitle}
         </p>
 
         <div className="mt-10">
           <Link href="/contact">
-            <Button variant="primary">Start Your Project</Button>
+            <Button variant="primary">{buttonText}</Button>
           </Link>
         </div>
       </ScrollReveal>

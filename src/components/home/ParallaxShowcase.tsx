@@ -9,7 +9,30 @@ import ParallaxLayer from '@/components/animations/ParallaxLayer';
 import ScrollReveal from '@/components/animations/ScrollReveal';
 import ImageReveal from '@/components/animations/ImageReveal';
 
-export default function ParallaxShowcase() {
+interface ImageAsset {
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+interface ParallaxShowcaseProps {
+  label: string;
+  imageBg: ImageAsset;
+  imageMid: ImageAsset;
+  imageFg: ImageAsset;
+  projectsCount: number;
+  projectsCountLabel: string;
+}
+
+export default function ParallaxShowcase({
+  label,
+  imageBg,
+  imageMid,
+  imageFg,
+  projectsCount,
+  projectsCountLabel,
+}: ParallaxShowcaseProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const isMobile = useMediaQuery('(max-width: 767px)');
@@ -23,12 +46,12 @@ export default function ParallaxShowcase() {
         trigger: el,
         start: 'top 85%',
         onEnter: () => {
-          animateCountUp(el, 150, 2);
+          animateCountUp(el, projectsCount, 2);
         },
         once: true,
       });
     },
-    { scope: sectionRef, dependencies: [isMobile] }
+    { scope: sectionRef, dependencies: [isMobile, projectsCount] }
   );
 
   /* Mobile: clean vertical stack with stat counter between images */
@@ -38,8 +61,8 @@ export default function ParallaxShowcase() {
         {/* Background architectural image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/parallax/layer-1-bg.jpg"
-            alt=""
+            src={imageBg.url}
+            alt={imageBg.alt}
             fill
             className="object-cover opacity-15"
             sizes="100vw"
@@ -49,7 +72,7 @@ export default function ParallaxShowcase() {
 
         {/* Section label */}
         <p className="relative z-[1] font-sans text-base tracking-[0.3em] uppercase text-gold/60 mb-10">
-          Selected Works
+          {label}
         </p>
 
         <div className="relative z-[1] space-y-8">
@@ -57,8 +80,8 @@ export default function ParallaxShowcase() {
           <ScrollReveal direction="up">
             <div className="relative w-full aspect-[3/4] overflow-hidden">
               <Image
-                src="/images/parallax/layer-2-mid.jpg"
-                alt="Architectural detail showcasing Forma Studio design"
+                src={imageMid.url}
+                alt={imageMid.alt}
                 fill
                 className="object-cover"
                 sizes="100vw"
@@ -75,7 +98,7 @@ export default function ParallaxShowcase() {
               0
             </span>
             <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
-              Projects Delivered
+              {projectsCountLabel}
             </span>
             <div className="w-12 h-px bg-gold/40 mt-4 mx-auto" />
           </ScrollReveal>
@@ -84,8 +107,8 @@ export default function ParallaxShowcase() {
           <ScrollReveal direction="up" delay={0.15}>
             <div className="relative w-full aspect-[4/3] overflow-hidden">
               <Image
-                src="/images/parallax/layer-3-fg.jpg"
-                alt="Architectural element by Forma Studio"
+                src={imageFg.url}
+                alt={imageFg.alt}
                 fill
                 className="object-cover"
                 sizes="100vw"
@@ -119,7 +142,7 @@ export default function ParallaxShowcase() {
         {/* Section label */}
         <ScrollReveal direction="left">
           <p className="font-sans text-sm md:text-base lg:text-lg tracking-[0.3em] uppercase text-gold/60 mb-16">
-            Selected Works
+            {label}
           </p>
         </ScrollReveal>
 
@@ -130,8 +153,8 @@ export default function ParallaxShowcase() {
             <ParallaxLayer speed={0.15}>
               <div className="relative w-full aspect-[3/4] overflow-hidden">
                 <Image
-                  src="/images/parallax/layer-2-mid.jpg"
-                  alt="Architectural detail showcasing Forma Studio design"
+                  src={imageMid.url}
+                  alt={imageMid.alt}
                   fill
                   className="object-cover"
                   sizes="58vw"
@@ -144,8 +167,8 @@ export default function ParallaxShowcase() {
           <div className="col-span-5 pt-24 md:pt-32">
             {/* Secondary image with clip-path reveal */}
             <ImageReveal
-              src="/images/parallax/layer-3-fg.jpg"
-              alt="Architectural element by Forma Studio"
+              src={imageFg.url}
+              alt={imageFg.alt}
               width={600}
               height={450}
             />
@@ -159,7 +182,7 @@ export default function ParallaxShowcase() {
                 0
               </span>
               <span className="font-sans text-sm text-gold tracking-widest uppercase mt-2 block">
-                Projects Delivered
+                {projectsCountLabel}
               </span>
               {/* Gold accent line */}
               <div className="w-12 h-px bg-gold/40 mt-6" />

@@ -13,12 +13,14 @@ import {
   FileText,
   Phone,
   Settings,
+  Home,
   LogOut,
   X,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Home Content', href: '/admin/content/home', icon: Home },
   { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
   { name: 'Services', href: '/admin/services', icon: Briefcase },
   { name: 'Careers', href: '/admin/careers', icon: Users },

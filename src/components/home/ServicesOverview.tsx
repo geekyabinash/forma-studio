@@ -3,7 +3,6 @@
 import { useRef } from 'react';
 import { ScrollTrigger, useGSAP } from '@/hooks/useGSAPSetup';
 import { animateStrokeDraw } from '@/lib/animations';
-import { services } from '@/data/services';
 import type { Service } from '@/types';
 import SectionHeading from '@/components/ui/SectionHeading';
 import ScrollReveal from '@/components/animations/ScrollReveal';
@@ -72,10 +71,18 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
 /*  Section wrapper                                                    */
 /* ------------------------------------------------------------------ */
 
-export default function ServicesOverview() {
+interface ServicesOverviewProps {
+  services: Service[];
+  label: string;
+}
+
+export default function ServicesOverview({
+  services,
+  label,
+}: ServicesOverviewProps) {
   return (
     <section className="py-24 md:py-32 px-6">
-      <SectionHeading title="What We Do" />
+      <SectionHeading title={label} />
 
       <div className="max-w-7xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-6">
         {services.map((service, index) => (

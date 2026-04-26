@@ -2,19 +2,27 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { projects } from '@/data/projects';
+import type { Project } from '@/types';
 import SectionHeading from '@/components/ui/SectionHeading';
 import ScrollReveal from '@/components/animations/ScrollReveal';
 
-const featuredProjects = projects.filter((p) => p.featured);
+interface FeaturedProjectsProps {
+  projects: Project[];
+  label: string;
+}
 
-export default function FeaturedProjects() {
+export default function FeaturedProjects({
+  projects,
+  label,
+}: FeaturedProjectsProps) {
+  if (projects.length === 0) return null;
+
   return (
     <section className="bg-dark py-24 md:py-32 px-6">
-      <SectionHeading title="Featured Work" dark={true} />
+      <SectionHeading title={label} dark={true} />
 
       <div className="max-w-7xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-        {featuredProjects.map((project, index) => {
+        {projects.map((project, index) => {
           const isOdd = index % 2 === 0;
           return (
             <ScrollReveal

@@ -5,15 +5,24 @@ import {
   careerBenefits,
   careerValues,
   galleryItems,
+  projects as projectsTable,
+  homeContent,
 } from '@/lib/db/schema'
 import { asc, eq, and } from 'drizzle-orm'
-import type { Service, JobPosition, Benefit, CultureValue } from '@/types'
+import type {
+  Service,
+  JobPosition,
+  Benefit,
+  CultureValue,
+  Project,
+} from '@/types'
 import { services as staticServices } from '@/data/services'
 import {
   positions as staticPositions,
   benefits as staticBenefits,
   cultureValues as staticCultureValues,
 } from '@/data/careers'
+import { projects as staticProjects } from '@/data/projects'
 
 // ---------------------------------------------------------------------------
 // Transform helpers  (Drizzle camelCase row  -->  frontend types)
@@ -212,6 +221,175 @@ export async function getGalleryItems(filters?: {
   } catch (err) {
     console.error('[getGalleryItems] DB fetch failed:', err)
     return []
+  }
+}
+
+type ProjectRow = typeof projectsTable.$inferSelect
+
+function transformProject(row: ProjectRow): Project {
+  const heroImage = row.heroImage ?? { url: '', alt: '', width: 0, height: 0 }
+  const gallery = row.gallery ?? []
+
+  return {
+    id: row.id,
+    title: row.title,
+    slug: row.slug,
+    category: row.category as Project['category'],
+    status: row.status as Project['status'],
+    year: row.year,
+    location: row.location,
+    area: row.area ?? undefined,
+    client: row.client ?? undefined,
+    description: row.description,
+    shortDescription: row.shortDescription,
+    heroImage: {
+      id: `img-${row.id}-hero`,
+      url: heroImage.url,
+      alt: heroImage.alt,
+      width: heroImage.width,
+      height: heroImage.height,
+    },
+    gallery: gallery.map((g, i) => ({
+      id: `img-${row.id}-${i}`,
+      url: g.url,
+      alt: g.alt,
+      width: g.width,
+      height: g.height,
+    })),
+    featured: row.featured ?? false,
+    sortOrder: row.sortOrder ?? 0,
+    createdAt: row.createdAt?.toISOString() ?? '',
+    updatedAt: row.updatedAt?.toISOString() ?? '',
+  }
+}
+
+export async function getProjects(): Promise<Project[]> {
+  try {
+    const data = await db
+      .select()
+      .from(projectsTable)
+      .orderBy(asc(projectsTable.sortOrder))
+
+    if (!data || data.length === 0) return staticProjects
+
+    return data.map(transformProject)
+  } catch (err) {
+    console.error('[getProjects] DB fetch failed, using static fallback:', err)
+    return staticProjects
+  }
+}
+
+export interface HomeContent {
+  heroVideoUrl: string
+  heroTaglineLine1: string
+  heroTaglineLine2: string
+  parallaxLabel: string
+  parallaxImageBg: { url: string; alt: string; width: number; height: number }
+  parallaxImageMid: { url: string; alt: string; width: number; height: number }
+  parallaxImageFg: { url: string; alt: string; width: number; height: number }
+  projectsCount: number
+  projectsCountLabel: string
+  aboutSnippetTitle: string
+  aboutSnippetBody: string
+  aboutSnippetCtaText: string
+  aboutSnippetImage: { url: string; alt: string; width: number; height: number }
+  featuredWorkLabel: string
+  servicesLabel: string
+  ctaHeading: string
+  ctaSubtitle: string
+  ctaButtonText: string
+}
+
+export const HOME_CONTENT_DEFAULTS: HomeContent = {
+  heroVideoUrl: '/video/hero-video.mp4',
+  heroTaglineLine1: 'DESIGN WITH INTENT.',
+  heroTaglineLine2: 'BUILD WITH PASSION.',
+  parallaxLabel: 'Selected Works',
+  parallaxImageBg: {
+    url: '/images/parallax/layer-1-bg.jpg',
+    alt: '',
+    width: 1600,
+    height: 900,
+  },
+  parallaxImageMid: {
+    url: '/images/parallax/layer-2-mid.jpg',
+    alt: 'Architectural detail showcasing Forma Studio design',
+    width: 1200,
+    height: 1600,
+  },
+  parallaxImageFg: {
+    url: '/images/parallax/layer-3-fg.jpg',
+    alt: 'Architectural element by Forma Studio',
+    width: 1200,
+    height: 900,
+  },
+  projectsCount: 150,
+  projectsCountLabel: 'Projects Delivered',
+  aboutSnippetTitle: 'Who We Are',
+  aboutSnippetBody:
+    "At Forma Studio, we believe architecture is more than structure — it's the silent language of space that shapes how people live, work, and dream. Founded on the principles of intentional design and passionate craftsmanship, we create environments that transcend the ordinary.",
+  aboutSnippetCtaText: 'Learn more about us',
+  aboutSnippetImage: {
+    url: '/images/parallax/layer-2-mid.jpg',
+    alt: 'Forma Studio design process',
+    width: 600,
+    height: 800,
+  },
+  featuredWorkLabel: 'Featured Work',
+  servicesLabel: 'What We Do',
+  ctaHeading: "Let's build something remarkable.",
+  ctaSubtitle:
+    "Ready to transform your vision into reality? Let's start a conversation.",
+  ctaButtonText: 'Start Your Project',
+}
+
+type HomeContentRow = typeof homeContent.$inferSelect
+
+function transformHomeContent(row: HomeContentRow): HomeContent {
+  return {
+    heroVideoUrl: row.heroVideoUrl ?? HOME_CONTENT_DEFAULTS.heroVideoUrl,
+    heroTaglineLine1:
+      row.heroTaglineLine1 ?? HOME_CONTENT_DEFAULTS.heroTaglineLine1,
+    heroTaglineLine2:
+      row.heroTaglineLine2 ?? HOME_CONTENT_DEFAULTS.heroTaglineLine2,
+    parallaxLabel: row.parallaxLabel ?? HOME_CONTENT_DEFAULTS.parallaxLabel,
+    parallaxImageBg:
+      row.parallaxImageBg ?? HOME_CONTENT_DEFAULTS.parallaxImageBg,
+    parallaxImageMid:
+      row.parallaxImageMid ?? HOME_CONTENT_DEFAULTS.parallaxImageMid,
+    parallaxImageFg:
+      row.parallaxImageFg ?? HOME_CONTENT_DEFAULTS.parallaxImageFg,
+    projectsCount: row.projectsCount ?? HOME_CONTENT_DEFAULTS.projectsCount,
+    projectsCountLabel:
+      row.projectsCountLabel ?? HOME_CONTENT_DEFAULTS.projectsCountLabel,
+    aboutSnippetTitle:
+      row.aboutSnippetTitle ?? HOME_CONTENT_DEFAULTS.aboutSnippetTitle,
+    aboutSnippetBody:
+      row.aboutSnippetBody ?? HOME_CONTENT_DEFAULTS.aboutSnippetBody,
+    aboutSnippetCtaText:
+      row.aboutSnippetCtaText ?? HOME_CONTENT_DEFAULTS.aboutSnippetCtaText,
+    aboutSnippetImage:
+      row.aboutSnippetImage ?? HOME_CONTENT_DEFAULTS.aboutSnippetImage,
+    featuredWorkLabel:
+      row.featuredWorkLabel ?? HOME_CONTENT_DEFAULTS.featuredWorkLabel,
+    servicesLabel: row.servicesLabel ?? HOME_CONTENT_DEFAULTS.servicesLabel,
+    ctaHeading: row.ctaHeading ?? HOME_CONTENT_DEFAULTS.ctaHeading,
+    ctaSubtitle: row.ctaSubtitle ?? HOME_CONTENT_DEFAULTS.ctaSubtitle,
+    ctaButtonText: row.ctaButtonText ?? HOME_CONTENT_DEFAULTS.ctaButtonText,
+  }
+}
+
+export async function getHomeContent(): Promise<HomeContent> {
+  try {
+    const [row] = await db.select().from(homeContent).limit(1)
+    if (!row) return HOME_CONTENT_DEFAULTS
+    return transformHomeContent(row)
+  } catch (err) {
+    console.error(
+      '[getHomeContent] DB fetch failed, using static defaults:',
+      err
+    )
+    return HOME_CONTENT_DEFAULTS
   }
 }
 

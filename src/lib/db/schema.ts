@@ -301,6 +301,35 @@ export const aboutContent = pgTable('about_content', {
     .$onUpdate(() => new Date()),
 })
 
+// ---- Home Content Table (single-row) ----
+
+type ImageAsset = { url: string; alt: string; width: number; height: number }
+
+export const homeContent = pgTable('home_content', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  heroVideoUrl: text('hero_video_url'),
+  heroTaglineLine1: text('hero_tagline_line1'),
+  heroTaglineLine2: text('hero_tagline_line2'),
+  parallaxLabel: text('parallax_label'),
+  parallaxImageBg: jsonb('parallax_image_bg').$type<ImageAsset>(),
+  parallaxImageMid: jsonb('parallax_image_mid').$type<ImageAsset>(),
+  parallaxImageFg: jsonb('parallax_image_fg').$type<ImageAsset>(),
+  projectsCount: integer('projects_count').default(0),
+  projectsCountLabel: text('projects_count_label'),
+  aboutSnippetTitle: text('about_snippet_title'),
+  aboutSnippetBody: text('about_snippet_body'),
+  aboutSnippetCtaText: text('about_snippet_cta_text'),
+  aboutSnippetImage: jsonb('about_snippet_image').$type<ImageAsset>(),
+  featuredWorkLabel: text('featured_work_label'),
+  servicesLabel: text('services_label'),
+  ctaHeading: text('cta_heading'),
+  ctaSubtitle: text('cta_subtitle'),
+  ctaButtonText: text('cta_button_text'),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+})
+
 // ---- Contact Info Table (single-row) ----
 
 export const contactInfo = pgTable('contact_info', {
