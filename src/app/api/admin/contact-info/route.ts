@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { contactInfo } from '@/lib/db/schema'
 import { contactInfoSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -68,6 +69,8 @@ export async function PUT(request: Request) {
     } else {
       ;[data] = await db.insert(contactInfo).values(values).returning()
     }
+
+    revalidatePublicSite()
 
     return NextResponse.json({ contactInfo: data })
   } catch (error) {

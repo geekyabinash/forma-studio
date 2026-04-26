@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { services } from '@/lib/db/schema'
 import { serviceSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -81,6 +82,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Service not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ service: data })
   } catch (error) {
     console.error('PUT /api/admin/services/[id] error:', error)
@@ -105,6 +108,8 @@ export async function DELETE(
 
     // Delete service
     await db.delete(services).where(eq(services.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { galleryItems } from '@/lib/db/schema'
 import { galleryItemSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
@@ -56,6 +57,8 @@ export async function POST(request: Request) {
         projectSlug: v.project_slug,
       })
       .returning()
+
+    revalidatePublicSite()
 
     return NextResponse.json({ item: data }, { status: 201 })
   } catch (error) {

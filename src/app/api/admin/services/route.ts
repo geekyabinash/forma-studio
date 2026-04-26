@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { services } from '@/lib/db/schema'
 import { serviceSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
@@ -57,6 +58,8 @@ export async function POST(request: Request) {
         featuredProjectSlug: v.featured_project_slug,
       })
       .returning()
+
+    revalidatePublicSite()
 
     return NextResponse.json({ service: data }, { status: 201 })
   } catch (error) {

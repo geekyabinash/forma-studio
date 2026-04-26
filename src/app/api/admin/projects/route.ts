@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
 import { projectSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
@@ -60,6 +61,8 @@ export async function POST(request: Request) {
         sortOrder: v.sort_order ?? 0,
       })
       .returning()
+
+    revalidatePublicSite()
 
     return NextResponse.json({ project: data }, { status: 201 })
   } catch (error) {

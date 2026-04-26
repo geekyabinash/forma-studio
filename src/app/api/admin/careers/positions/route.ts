@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { careerPositions } from '@/lib/db/schema'
 import { careerPositionSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
@@ -59,6 +60,8 @@ export async function POST(request: Request) {
         isActive: v.is_active,
       })
       .returning()
+
+    revalidatePublicSite()
 
     return NextResponse.json({ position: data }, { status: 201 })
   } catch (error) {

@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { homeContent } from '@/lib/db/schema'
 import { homeContentSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -86,6 +87,8 @@ export async function PUT(request: Request) {
     } else {
       ;[data] = await db.insert(homeContent).values(values).returning()
     }
+
+    revalidatePublicSite()
 
     return NextResponse.json({ home: data })
   } catch (error) {

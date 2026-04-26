@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { careerValues } from '@/lib/db/schema'
 import { careerValueSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -73,6 +74,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Value not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ value: data })
   } catch (error) {
     console.error('PUT /api/admin/careers/values/[id] error:', error)
@@ -97,6 +100,8 @@ export async function DELETE(
 
     // Delete value
     await db.delete(careerValues).where(eq(careerValues.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {

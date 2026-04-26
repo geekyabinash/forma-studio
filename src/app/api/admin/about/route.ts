@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { aboutContent } from '@/lib/db/schema'
 import { aboutContentSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -75,6 +76,8 @@ export async function PUT(request: Request) {
         })
         .returning()
     }
+
+    revalidatePublicSite()
 
     return NextResponse.json({ about: data })
   } catch (error) {

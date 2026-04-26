@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
 import { projectSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -81,6 +82,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ project: data })
   } catch (error) {
     console.error('PUT /api/admin/projects/[id] error:', error)
@@ -104,6 +107,8 @@ export async function DELETE(
     const { id } = await params
 
     await db.delete(projects).where(eq(projects.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {

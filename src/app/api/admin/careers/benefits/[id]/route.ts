@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { careerBenefits } from '@/lib/db/schema'
 import { careerBenefitSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -74,6 +75,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Benefit not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ benefit: data })
   } catch (error) {
     console.error('PUT /api/admin/careers/benefits/[id] error:', error)
@@ -98,6 +101,8 @@ export async function DELETE(
 
     // Delete benefit
     await db.delete(careerBenefits).where(eq(careerBenefits.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {

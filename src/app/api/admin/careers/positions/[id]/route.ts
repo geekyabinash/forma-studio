@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { careerPositions } from '@/lib/db/schema'
 import { careerPositionSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -80,6 +81,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Position not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ position: data })
   } catch (error) {
     console.error('PUT /api/admin/careers/positions/[id] error:', error)
@@ -104,6 +107,8 @@ export async function DELETE(
 
     // Delete position
     await db.delete(careerPositions).where(eq(careerPositions.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {

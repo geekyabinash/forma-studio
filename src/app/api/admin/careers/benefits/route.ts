@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { careerBenefits } from '@/lib/db/schema'
 import { careerBenefitSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
         sortOrder: v.sort_order,
       })
       .returning()
+
+    revalidatePublicSite()
 
     return NextResponse.json({ benefit: data }, { status: 201 })
   } catch (error) {

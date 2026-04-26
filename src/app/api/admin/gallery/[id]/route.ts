@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { galleryItems } from '@/lib/db/schema'
 import { galleryItemSchema } from '@/lib/schemas'
 import { auth } from '@/lib/auth'
+import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
@@ -77,6 +78,8 @@ export async function PUT(
       return NextResponse.json({ error: 'Gallery item not found' }, { status: 404 })
     }
 
+    revalidatePublicSite()
+
     return NextResponse.json({ item: data })
   } catch (error) {
     console.error('PUT /api/admin/gallery/[id] error:', error)
@@ -101,6 +104,8 @@ export async function DELETE(
 
     // Delete gallery item
     await db.delete(galleryItems).where(eq(galleryItems.id, id))
+
+    revalidatePublicSite()
 
     return NextResponse.json({ success: true })
   } catch (error) {
