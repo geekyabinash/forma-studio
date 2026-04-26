@@ -11,6 +11,13 @@ export interface SocialUrls {
   whatsapp?: string;
 }
 
+const FALLBACK_URLS: Required<SocialUrls> = {
+  instagram: 'https://www.instagram.com/',
+  facebook: 'https://www.facebook.com/',
+  linkedin: 'https://www.linkedin.com/',
+  whatsapp: 'https://wa.me/',
+};
+
 interface SocialLinksProps {
   className?: string;
   iconSize?: number;
@@ -22,14 +29,33 @@ export default function SocialLinks({
   iconSize = 20,
   urls,
 }: SocialLinksProps) {
-  const items = [
-    { label: 'Instagram', href: urls?.instagram, icon: InstagramIcon },
-    { label: 'Facebook', href: urls?.facebook, icon: FacebookIcon },
-    { label: 'LinkedIn', href: urls?.linkedin, icon: LinkedinIcon },
-    { label: 'WhatsApp', href: urls?.whatsapp, icon: WhatsAppIcon },
-  ].filter((item) => item.href && item.href.trim().length > 0);
+  const resolve = (configured: string | undefined, fallback: string) => {
+    const trimmed = configured?.trim();
+    return trimmed && trimmed.length > 0 ? trimmed : fallback;
+  };
 
-  if (items.length === 0) return null;
+  const items = [
+    {
+      label: 'Instagram',
+      href: resolve(urls?.instagram, FALLBACK_URLS.instagram),
+      icon: InstagramIcon,
+    },
+    {
+      label: 'Facebook',
+      href: resolve(urls?.facebook, FALLBACK_URLS.facebook),
+      icon: FacebookIcon,
+    },
+    {
+      label: 'LinkedIn',
+      href: resolve(urls?.linkedin, FALLBACK_URLS.linkedin),
+      icon: LinkedinIcon,
+    },
+    {
+      label: 'WhatsApp',
+      href: resolve(urls?.whatsapp, FALLBACK_URLS.whatsapp),
+      icon: WhatsAppIcon,
+    },
+  ];
 
   return (
     <div className={cn('flex items-center gap-2', className)}>

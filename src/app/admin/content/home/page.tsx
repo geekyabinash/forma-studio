@@ -49,6 +49,7 @@ interface HomeFormData {
 interface PickerItem {
   slug: string
   title: string
+  imageUrl?: string
 }
 
 const emptyForm: HomeFormData = {
@@ -103,6 +104,22 @@ function SlugPicker({
   const knownSlugs = new Set(items.map((i) => i.slug))
   const orphanedSelected = selected.filter((s) => !knownSlugs.has(s))
 
+  const Thumb = ({ src, alt }: { src?: string; alt: string }) =>
+    src && src.length > 0 ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt}
+        className="w-12 h-12 rounded object-cover border border-[#F5E6D0]/10 shrink-0"
+      />
+    ) : (
+      <div className="w-12 h-12 rounded bg-[#141B2B] border border-dashed border-[#F5E6D0]/20 flex items-center justify-center shrink-0">
+        <span className="font-josefin text-[10px] text-[#D4B896]/50">
+          No image
+        </span>
+      </div>
+    )
+
   return (
     <div className="space-y-3">
       {selected.length > 0 && (
@@ -117,11 +134,12 @@ function SlugPicker({
               return (
                 <li
                   key={slug}
-                  className="flex items-center gap-2 px-3 py-2 bg-[#141B2B] border border-[#F5E6D0]/15 rounded-lg"
+                  className="flex items-center gap-3 px-3 py-2 bg-[#141B2B] border border-[#F5E6D0]/15 rounded-lg"
                 >
                   <span className="font-josefin text-[#D4B896] text-xs w-5">
                     {index + 1}.
                   </span>
+                  <Thumb src={item?.imageUrl} alt={label} />
                   <span className="font-josefin text-[#F5E6D0] text-sm flex-1 truncate">
                     {label}
                     {!item && (
@@ -168,21 +186,22 @@ function SlugPicker({
           <p className="font-josefin text-[#D4B896] text-xs uppercase tracking-wider">
             Available
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-64 overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-80 overflow-y-auto pr-1">
             {items
               .filter((i) => !selected.includes(i.slug))
               .map((item) => (
                 <label
                   key={item.slug}
-                  className="flex items-center gap-2 px-3 py-2 bg-[#141B2B]/60 border border-[#F5E6D0]/10 rounded-lg cursor-pointer hover:border-[#D4654A]/40 transition-colors"
+                  className="flex items-center gap-3 px-3 py-2 bg-[#141B2B]/60 border border-[#F5E6D0]/10 rounded-lg cursor-pointer hover:border-[#D4654A]/40 transition-colors"
                 >
                   <input
                     type="checkbox"
                     checked={false}
                     onChange={() => onToggle(item.slug)}
-                    className="accent-[#D4654A]"
+                    className="accent-[#D4654A] shrink-0"
                   />
-                  <span className="font-josefin text-[#F5E6D0] text-sm truncate">
+                  <Thumb src={item.imageUrl} alt={item.title} />
+                  <span className="font-josefin text-[#F5E6D0] text-sm truncate flex-1">
                     {item.title}
                   </span>
                 </label>
@@ -241,16 +260,26 @@ export default function HomeContentPage() {
       const projectsJson = await projectsRes.json()
       const servicesJson = await servicesRes.json()
       setAvailableProjects(
-        (projectsJson.projects ?? []).map((p: { slug: string; title: string }) => ({
-          slug: p.slug,
-          title: p.title,
-        }))
+        (projectsJson.projects ?? []).map(
+          (p: {
+            slug: string
+            title: string
+            heroImage?: { url?: string } | null
+          }) => ({
+            slug: p.slug,
+            title: p.title,
+            imageUrl: p.heroImage?.url ?? '',
+          })
+        )
       )
       setAvailableServices(
-        (servicesJson.services ?? []).map((s: { slug: string; title: string }) => ({
-          slug: s.slug,
-          title: s.title,
-        }))
+        (servicesJson.services ?? []).map(
+          (s: { slug: string; title: string; imageUrl?: string | null }) => ({
+            slug: s.slug,
+            title: s.title,
+            imageUrl: s.imageUrl ?? '',
+          })
+        )
       )
     } catch (error) {
       console.error('Failed to fetch picker data:', error)
