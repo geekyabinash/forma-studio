@@ -5,10 +5,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
-const WHATSAPP_URL =
+const FALLBACK_WHATSAPP_URL =
   'https://wa.me/919999999999?text=Hi%2C%20I%27d%20like%20to%20discuss%20a%20project%20with%20Forma%20Studio.';
 
-export default function WhatsAppFloat() {
+interface WhatsAppFloatProps {
+  url?: string;
+}
+
+export default function WhatsAppFloat({ url }: WhatsAppFloatProps) {
+  const href = url && url.trim().length > 0 ? url : FALLBACK_WHATSAPP_URL;
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -44,7 +49,7 @@ export default function WhatsAppFloat() {
     <AnimatePresence>
       {isVisible && (
         <motion.a
-          href={WHATSAPP_URL}
+          href={href}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"

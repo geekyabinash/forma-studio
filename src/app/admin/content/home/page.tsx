@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Save } from 'lucide-react'
+import { Save, ArrowUp, ArrowDown, X as XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { HOME_CONTENT_DEFAULTS } from '@/lib/data/fetch'
@@ -28,10 +28,27 @@ interface HomeFormData {
   about_snippet_cta_text: string
   about_snippet_image: ImageAsset
   featured_work_label: string
+  featured_work_eyebrow: string
+  featured_work_description: string
+  featured_work_project_slugs: string[]
+  featured_work_limit: number
+  featured_work_cta_text: string
+  featured_work_cta_link: string
   services_label: string
+  services_eyebrow: string
+  services_description: string
+  services_service_slugs: string[]
+  services_limit: number
+  services_cta_text: string
+  services_cta_link: string
   cta_heading: string
   cta_subtitle: string
   cta_button_text: string
+}
+
+interface PickerItem {
+  slug: string
+  title: string
 }
 
 const emptyForm: HomeFormData = {
@@ -49,7 +66,19 @@ const emptyForm: HomeFormData = {
   about_snippet_cta_text: HOME_CONTENT_DEFAULTS.aboutSnippetCtaText,
   about_snippet_image: HOME_CONTENT_DEFAULTS.aboutSnippetImage,
   featured_work_label: HOME_CONTENT_DEFAULTS.featuredWorkLabel,
+  featured_work_eyebrow: HOME_CONTENT_DEFAULTS.featuredWorkEyebrow,
+  featured_work_description: HOME_CONTENT_DEFAULTS.featuredWorkDescription,
+  featured_work_project_slugs: HOME_CONTENT_DEFAULTS.featuredWorkProjectSlugs,
+  featured_work_limit: HOME_CONTENT_DEFAULTS.featuredWorkLimit,
+  featured_work_cta_text: HOME_CONTENT_DEFAULTS.featuredWorkCtaText,
+  featured_work_cta_link: HOME_CONTENT_DEFAULTS.featuredWorkCtaLink,
   services_label: HOME_CONTENT_DEFAULTS.servicesLabel,
+  services_eyebrow: HOME_CONTENT_DEFAULTS.servicesEyebrow,
+  services_description: HOME_CONTENT_DEFAULTS.servicesDescription,
+  services_service_slugs: HOME_CONTENT_DEFAULTS.servicesServiceSlugs,
+  services_limit: HOME_CONTENT_DEFAULTS.servicesLimit,
+  services_cta_text: HOME_CONTENT_DEFAULTS.servicesCtaText,
+  services_cta_link: HOME_CONTENT_DEFAULTS.servicesCtaLink,
   cta_heading: HOME_CONTENT_DEFAULTS.ctaHeading,
   cta_subtitle: HOME_CONTENT_DEFAULTS.ctaSubtitle,
   cta_button_text: HOME_CONTENT_DEFAULTS.ctaButtonText,
@@ -59,6 +88,123 @@ const inputClass =
   'w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40 focus:outline-none focus:border-[#D4654A] transition-colors'
 const labelClass = 'block font-josefin text-[#F5E6D0] text-sm mb-2'
 const cardClass = 'bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10'
+
+function SlugPicker({
+  items,
+  selected,
+  onToggle,
+  onMove,
+}: {
+  items: PickerItem[]
+  selected: string[]
+  onToggle: (slug: string) => void
+  onMove: (slug: string, direction: -1 | 1) => void
+}) {
+  const knownSlugs = new Set(items.map((i) => i.slug))
+  const orphanedSelected = selected.filter((s) => !knownSlugs.has(s))
+
+  return (
+    <div className="space-y-3">
+      {selected.length > 0 && (
+        <div className="space-y-1.5">
+          <p className="font-josefin text-[#D4B896] text-xs uppercase tracking-wider">
+            Display order
+          </p>
+          <ol className="space-y-1.5">
+            {selected.map((slug, index) => {
+              const item = items.find((i) => i.slug === slug)
+              const label = item?.title ?? slug
+              return (
+                <li
+                  key={slug}
+                  className="flex items-center gap-2 px-3 py-2 bg-[#141B2B] border border-[#F5E6D0]/15 rounded-lg"
+                >
+                  <span className="font-josefin text-[#D4B896] text-xs w-5">
+                    {index + 1}.
+                  </span>
+                  <span className="font-josefin text-[#F5E6D0] text-sm flex-1 truncate">
+                    {label}
+                    {!item && (
+                      <span className="ml-2 text-[#D4654A] text-xs">
+                        (missing — click X to remove)
+                      </span>
+                    )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onMove(slug, -1)}
+                    disabled={index === 0}
+                    className="p-1 text-[#D4B896] hover:text-[#D4654A] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Move up"
+                  >
+                    <ArrowUp className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onMove(slug, 1)}
+                    disabled={index === selected.length - 1}
+                    className="p-1 text-[#D4B896] hover:text-[#D4654A] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    aria-label="Move down"
+                  >
+                    <ArrowDown className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onToggle(slug)}
+                    className="p-1 text-[#D4B896] hover:text-red-400 transition-colors"
+                    aria-label="Remove"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                </li>
+              )
+            })}
+          </ol>
+        </div>
+      )}
+
+      {items.length > 0 && (
+        <div className="space-y-1.5">
+          <p className="font-josefin text-[#D4B896] text-xs uppercase tracking-wider">
+            Available
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-64 overflow-y-auto pr-1">
+            {items
+              .filter((i) => !selected.includes(i.slug))
+              .map((item) => (
+                <label
+                  key={item.slug}
+                  className="flex items-center gap-2 px-3 py-2 bg-[#141B2B]/60 border border-[#F5E6D0]/10 rounded-lg cursor-pointer hover:border-[#D4654A]/40 transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={false}
+                    onChange={() => onToggle(item.slug)}
+                    className="accent-[#D4654A]"
+                  />
+                  <span className="font-josefin text-[#F5E6D0] text-sm truncate">
+                    {item.title}
+                  </span>
+                </label>
+              ))}
+            {items.filter((i) => !selected.includes(i.slug)).length === 0 && (
+              <p className="font-josefin text-[#D4B896]/60 text-xs col-span-full px-3 py-2">
+                All items selected.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {orphanedSelected.length > 0 && (
+        <p className="font-josefin text-[#D4654A] text-xs">
+          {orphanedSelected.length} selected item(s) no longer exist. Remove
+          them above.
+        </p>
+      )}
+    </div>
+  )
+}
 
 const requiredImageFields: Array<{
   field:
@@ -78,10 +224,38 @@ export default function HomeContentPage() {
   const [formData, setFormData] = useState<HomeFormData>(emptyForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [availableProjects, setAvailableProjects] = useState<PickerItem[]>([])
+  const [availableServices, setAvailableServices] = useState<PickerItem[]>([])
 
   useEffect(() => {
     fetchHomeContent()
+    fetchPickerData()
   }, [])
+
+  const fetchPickerData = async () => {
+    try {
+      const [projectsRes, servicesRes] = await Promise.all([
+        fetch('/api/admin/projects'),
+        fetch('/api/admin/services'),
+      ])
+      const projectsJson = await projectsRes.json()
+      const servicesJson = await servicesRes.json()
+      setAvailableProjects(
+        (projectsJson.projects ?? []).map((p: { slug: string; title: string }) => ({
+          slug: p.slug,
+          title: p.title,
+        }))
+      )
+      setAvailableServices(
+        (servicesJson.services ?? []).map((s: { slug: string; title: string }) => ({
+          slug: s.slug,
+          title: s.title,
+        }))
+      )
+    } catch (error) {
+      console.error('Failed to fetch picker data:', error)
+    }
+  }
 
   const fetchHomeContent = async () => {
     try {
@@ -127,8 +301,43 @@ export default function HomeContentPage() {
           featured_work_label:
             data.home.featuredWorkLabel ??
             HOME_CONTENT_DEFAULTS.featuredWorkLabel,
+          featured_work_eyebrow:
+            data.home.featuredWorkEyebrow ??
+            HOME_CONTENT_DEFAULTS.featuredWorkEyebrow,
+          featured_work_description:
+            data.home.featuredWorkDescription ??
+            HOME_CONTENT_DEFAULTS.featuredWorkDescription,
+          featured_work_project_slugs:
+            data.home.featuredWorkProjectSlugs ??
+            HOME_CONTENT_DEFAULTS.featuredWorkProjectSlugs,
+          featured_work_limit:
+            data.home.featuredWorkLimit ??
+            HOME_CONTENT_DEFAULTS.featuredWorkLimit,
+          featured_work_cta_text:
+            data.home.featuredWorkCtaText ??
+            HOME_CONTENT_DEFAULTS.featuredWorkCtaText,
+          featured_work_cta_link:
+            data.home.featuredWorkCtaLink ??
+            HOME_CONTENT_DEFAULTS.featuredWorkCtaLink,
           services_label:
             data.home.servicesLabel ?? HOME_CONTENT_DEFAULTS.servicesLabel,
+          services_eyebrow:
+            data.home.servicesEyebrow ??
+            HOME_CONTENT_DEFAULTS.servicesEyebrow,
+          services_description:
+            data.home.servicesDescription ??
+            HOME_CONTENT_DEFAULTS.servicesDescription,
+          services_service_slugs:
+            data.home.servicesServiceSlugs ??
+            HOME_CONTENT_DEFAULTS.servicesServiceSlugs,
+          services_limit:
+            data.home.servicesLimit ?? HOME_CONTENT_DEFAULTS.servicesLimit,
+          services_cta_text:
+            data.home.servicesCtaText ??
+            HOME_CONTENT_DEFAULTS.servicesCtaText,
+          services_cta_link:
+            data.home.servicesCtaLink ??
+            HOME_CONTENT_DEFAULTS.servicesCtaLink,
           cta_heading:
             data.home.ctaHeading ?? HOME_CONTENT_DEFAULTS.ctaHeading,
           cta_subtitle:
@@ -143,6 +352,34 @@ export default function HomeContentPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const toggleSlug = (
+    field: 'featured_work_project_slugs' | 'services_service_slugs',
+    slug: string
+  ) => {
+    setFormData((prev) => {
+      const current = prev[field]
+      const next = current.includes(slug)
+        ? current.filter((s) => s !== slug)
+        : [...current, slug]
+      return { ...prev, [field]: next }
+    })
+  }
+
+  const moveSlug = (
+    field: 'featured_work_project_slugs' | 'services_service_slugs',
+    slug: string,
+    direction: -1 | 1
+  ) => {
+    setFormData((prev) => {
+      const arr = [...prev[field]]
+      const i = arr.indexOf(slug)
+      const j = i + direction
+      if (i === -1 || j < 0 || j >= arr.length) return prev
+      ;[arr[i], arr[j]] = [arr[j], arr[i]]
+      return { ...prev, [field]: arr }
+    })
   }
 
   const updateImage = (
@@ -488,41 +725,270 @@ export default function HomeContentPage() {
           </div>
         </div>
 
-        {/* ── Section Headings ── */}
+        {/* ── Featured Work Section ── */}
         <div className={cardClass}>
-          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-6">
-            Section Headings
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-2">
+            Featured Work Section
           </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className={labelClass}>Featured Work Heading</label>
-              <input
-                type="text"
-                value={formData.featured_work_label}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    featured_work_label: e.target.value,
-                  }))
-                }
-                className={inputClass}
-                placeholder="Featured Work"
-              />
+          <p className="font-josefin text-[#D4B896]/60 text-xs mb-6">
+            Showcase the projects that lead the home page. Leave the project
+            picker empty to fall back to the &ldquo;Featured&rdquo; flag set on
+            individual projects.
+          </p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-4">
+              <div>
+                <label className={labelClass}>Eyebrow</label>
+                <input
+                  type="text"
+                  value={formData.featured_work_eyebrow}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      featured_work_eyebrow: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="Selected Projects"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Heading</label>
+                <input
+                  type="text"
+                  value={formData.featured_work_label}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      featured_work_label: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="Featured Work"
+                />
+              </div>
             </div>
             <div>
-              <label className={labelClass}>Services Heading</label>
-              <input
-                type="text"
-                value={formData.services_label}
+              <label className={labelClass}>Description</label>
+              <textarea
+                value={formData.featured_work_description}
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    services_label: e.target.value,
+                    featured_work_description: e.target.value,
                   }))
                 }
-                className={inputClass}
-                placeholder="What We Do"
+                rows={3}
+                className={`${inputClass} resize-none`}
+                placeholder="Optional supporting paragraph that introduces this section"
               />
+            </div>
+
+            <div>
+              <label className={labelClass}>Project Selection</label>
+              <p className="font-josefin text-[#D4B896]/60 text-xs mb-3">
+                {availableProjects.length === 0
+                  ? 'Loading projects…'
+                  : 'Tick projects to include them. Use the arrows to set display order. Leave all unchecked to use the global Featured flag.'}
+              </p>
+              <SlugPicker
+                items={availableProjects}
+                selected={formData.featured_work_project_slugs}
+                onToggle={(slug) =>
+                  toggleSlug('featured_work_project_slugs', slug)
+                }
+                onMove={(slug, dir) =>
+                  moveSlug('featured_work_project_slugs', slug, dir)
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr_1fr] gap-4">
+              <div>
+                <label className={labelClass}>Display Limit</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={formData.featured_work_limit}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      featured_work_limit: Number(e.target.value) || 0,
+                    }))
+                  }
+                  className={inputClass}
+                />
+                <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                  0 = no limit
+                </p>
+              </div>
+              <div>
+                <label className={labelClass}>CTA Button Text</label>
+                <input
+                  type="text"
+                  value={formData.featured_work_cta_text}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      featured_work_cta_text: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="View all projects"
+                />
+                <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                  Leave blank to hide the CTA
+                </p>
+              </div>
+              <div>
+                <label className={labelClass}>CTA Link</label>
+                <input
+                  type="text"
+                  value={formData.featured_work_cta_link}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      featured_work_cta_link: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="/projects"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── What We Do (Services) Section ── */}
+        <div className={cardClass}>
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-2">
+            What We Do (Services) Section
+          </h3>
+          <p className="font-josefin text-[#D4B896]/60 text-xs mb-6">
+            Curate the services overview that appears on the home page. Leave
+            the service picker empty to show every service in its global sort
+            order.
+          </p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_2fr] gap-4">
+              <div>
+                <label className={labelClass}>Eyebrow</label>
+                <input
+                  type="text"
+                  value={formData.services_eyebrow}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      services_eyebrow: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="Our Services"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Heading</label>
+                <input
+                  type="text"
+                  value={formData.services_label}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      services_label: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="What We Do"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={labelClass}>Description</label>
+              <textarea
+                value={formData.services_description}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    services_description: e.target.value,
+                  }))
+                }
+                rows={3}
+                className={`${inputClass} resize-none`}
+                placeholder="Optional supporting paragraph that introduces this section"
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Service Selection</label>
+              <p className="font-josefin text-[#D4B896]/60 text-xs mb-3">
+                {availableServices.length === 0
+                  ? 'Loading services…'
+                  : 'Tick services to include them. Use the arrows to set display order. Leave all unchecked to show every service.'}
+              </p>
+              <SlugPicker
+                items={availableServices}
+                selected={formData.services_service_slugs}
+                onToggle={(slug) =>
+                  toggleSlug('services_service_slugs', slug)
+                }
+                onMove={(slug, dir) =>
+                  moveSlug('services_service_slugs', slug, dir)
+                }
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-[150px_1fr_1fr] gap-4">
+              <div>
+                <label className={labelClass}>Display Limit</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={formData.services_limit}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      services_limit: Number(e.target.value) || 0,
+                    }))
+                  }
+                  className={inputClass}
+                />
+                <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                  0 = no limit
+                </p>
+              </div>
+              <div>
+                <label className={labelClass}>CTA Button Text</label>
+                <input
+                  type="text"
+                  value={formData.services_cta_text}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      services_cta_text: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="View all services"
+                />
+                <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                  Leave blank to hide the CTA
+                </p>
+              </div>
+              <div>
+                <label className={labelClass}>CTA Link</label>
+                <input
+                  type="text"
+                  value={formData.services_cta_link}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      services_cta_link: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="/services"
+                />
+              </div>
             </div>
           </div>
         </div>

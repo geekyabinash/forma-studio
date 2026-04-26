@@ -41,6 +41,20 @@ export async function PUT(request: Request) {
     }
     const v = result.data
 
+    const values = {
+      address: v.address,
+      phone: v.phone,
+      email: v.email,
+      workingHours: v.working_hours,
+      instagramUrl: v.instagram_url,
+      facebookUrl: v.facebook_url,
+      linkedinUrl: v.linkedin_url,
+      whatsappUrl: v.whatsapp_url,
+      footerTagline: v.footer_tagline,
+      footerCopyright: v.footer_copyright,
+      footerCredit: v.footer_credit,
+    }
+
     // Check if a row exists
     const [existing] = await db.select().from(contactInfo).limit(1)
 
@@ -48,24 +62,11 @@ export async function PUT(request: Request) {
     if (existing) {
       ;[data] = await db
         .update(contactInfo)
-        .set({
-          address: v.address,
-          phone: v.phone,
-          email: v.email,
-          workingHours: v.working_hours,
-        })
+        .set(values)
         .where(eq(contactInfo.id, existing.id))
         .returning()
     } else {
-      ;[data] = await db
-        .insert(contactInfo)
-        .values({
-          address: v.address,
-          phone: v.phone,
-          email: v.email,
-          workingHours: v.working_hours,
-        })
-        .returning()
+      ;[data] = await db.insert(contactInfo).values(values).returning()
     }
 
     return NextResponse.json({ contactInfo: data })

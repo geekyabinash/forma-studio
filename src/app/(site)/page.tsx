@@ -15,8 +15,6 @@ export default async function HomePage() {
     getServices(),
   ]);
 
-  const featured = projects.filter((p) => p.featured);
-
   return (
     <>
       <HeroVideo
@@ -39,10 +37,25 @@ export default async function HomePage() {
         image={home.aboutSnippetImage}
       />
       <FeaturedProjects
-        projects={featured}
+        projects={projects}
         label={home.featuredWorkLabel}
+        eyebrow={home.featuredWorkEyebrow}
+        description={home.featuredWorkDescription}
+        manualSlugs={home.featuredWorkProjectSlugs}
+        limit={home.featuredWorkLimit}
+        ctaText={home.featuredWorkCtaText}
+        ctaLink={home.featuredWorkCtaLink}
       />
-      <ServicesOverview services={services} label={home.servicesLabel} />
+      <ServicesOverview
+        services={services}
+        label={home.servicesLabel}
+        eyebrow={home.servicesEyebrow}
+        description={home.servicesDescription}
+        manualSlugs={home.servicesServiceSlugs}
+        limit={home.servicesLimit}
+        ctaText={home.servicesCtaText}
+        ctaLink={home.servicesCtaLink}
+      />
       <CTASection
         heading={home.ctaHeading}
         subtitle={home.ctaSubtitle}

@@ -5,13 +5,24 @@ import Footer from '@/components/layout/Footer';
 import CustomCursor from '@/components/animations/CustomCursor';
 import WhatsAppFloat from '@/components/ui/WhatsAppFloat';
 import { getVisibleNavItems } from '@/lib/navigation';
+import { getContactSiteInfo } from '@/lib/data/fetch';
 
 export default async function SiteLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const visibleItems = await getVisibleNavItems();
+  const [visibleItems, contact] = await Promise.all([
+    getVisibleNavItems(),
+    getContactSiteInfo(),
+  ]);
+
+  const socials = {
+    instagram: contact.instagramUrl,
+    facebook: contact.facebookUrl,
+    linkedin: contact.linkedinUrl,
+    whatsapp: contact.whatsappUrl,
+  };
 
   return (
     <SmoothScrollProvider>
@@ -20,8 +31,17 @@ export default async function SiteLayout({
       <PageTransitionProvider>
         <main>{children}</main>
       </PageTransitionProvider>
-      <Footer quickLinks={visibleItems} />
-      <WhatsAppFloat />
+      <Footer
+        quickLinks={visibleItems}
+        address={contact.address}
+        phone={contact.phone}
+        email={contact.email}
+        tagline={contact.footerTagline}
+        copyright={contact.footerCopyright}
+        credit={contact.footerCredit}
+        socials={socials}
+      />
+      <WhatsAppFloat url={contact.whatsappUrl} />
     </SmoothScrollProvider>
   );
 }

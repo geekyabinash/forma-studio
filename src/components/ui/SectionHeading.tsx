@@ -6,6 +6,7 @@ import SplitTextReveal from '@/components/animations/SplitTextReveal';
 interface SectionHeadingProps {
   title: string;
   subtitle?: string;
+  eyebrow?: string;
   className?: string;
   align?: 'left' | 'center';
   dark?: boolean;
@@ -14,6 +15,7 @@ interface SectionHeadingProps {
 export default function SectionHeading({
   title,
   subtitle,
+  eyebrow,
   className,
   align = 'center',
   dark = false,
@@ -25,6 +27,16 @@ export default function SectionHeading({
         className
       )}
     >
+      {eyebrow && eyebrow.trim().length > 0 && (
+        <p
+          className={cn(
+            'font-sans text-xs md:text-sm tracking-[0.3em] uppercase mb-4',
+            dark ? 'text-gold/70' : 'text-coral'
+          )}
+        >
+          {eyebrow}
+        </p>
+      )}
       <SplitTextReveal
         as="h2"
         splitType="words"

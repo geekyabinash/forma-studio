@@ -177,7 +177,19 @@ export const homeContentSchema = z.object({
   about_snippet_cta_text: z.string().min(1, 'CTA link text is required'),
   about_snippet_image: homeImageAssetSchema,
   featured_work_label: z.string().min(1, 'Featured work label is required'),
+  featured_work_eyebrow: z.string().optional().default(''),
+  featured_work_description: z.string().optional().default(''),
+  featured_work_project_slugs: z.array(z.string()).optional().default([]),
+  featured_work_limit: z.number().int().min(0).optional().default(0),
+  featured_work_cta_text: z.string().optional().default(''),
+  featured_work_cta_link: z.string().optional().default('/projects'),
   services_label: z.string().min(1, 'Services label is required'),
+  services_eyebrow: z.string().optional().default(''),
+  services_description: z.string().optional().default(''),
+  services_service_slugs: z.array(z.string()).optional().default([]),
+  services_limit: z.number().int().min(0).optional().default(0),
+  services_cta_text: z.string().optional().default(''),
+  services_cta_link: z.string().optional().default('/services'),
   cta_heading: z.string().min(1, 'CTA heading is required'),
   cta_subtitle: z.string().min(1, 'CTA subtitle is required'),
   cta_button_text: z.string().min(1, 'CTA button text is required'),
@@ -186,11 +198,28 @@ export const homeContentSchema = z.object({
 export type HomeContentFormValues = z.infer<typeof homeContentSchema>;
 
 // ========== Admin: Contact Info ==========
+const optionalUrlSchema = z
+  .string()
+  .trim()
+  .max(2048)
+  .refine((v) => v === '' || /^https?:\/\//i.test(v) || v.startsWith('mailto:') || v.startsWith('tel:'), {
+    message: 'Must be a full URL (https://…) or empty',
+  })
+  .optional()
+  .default('');
+
 export const contactInfoSchema = z.object({
   address: z.string().min(1, 'Address is required'),
   phone: z.string().min(1, 'Phone is required'),
   email: z.string().email('Please enter a valid email'),
   working_hours: z.string().min(1, 'Working hours is required'),
+  instagram_url: optionalUrlSchema,
+  facebook_url: optionalUrlSchema,
+  linkedin_url: optionalUrlSchema,
+  whatsapp_url: optionalUrlSchema,
+  footer_tagline: z.string().optional().default(''),
+  footer_copyright: z.string().optional().default(''),
+  footer_credit: z.string().optional().default(''),
 });
 
 export type ContactInfoFormValues = z.infer<typeof contactInfoSchema>;

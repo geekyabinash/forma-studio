@@ -9,6 +9,13 @@ interface ContactFormData {
   phone: string
   email: string
   working_hours: string
+  instagram_url: string
+  facebook_url: string
+  linkedin_url: string
+  whatsapp_url: string
+  footer_tagline: string
+  footer_copyright: string
+  footer_credit: string
 }
 
 const emptyForm: ContactFormData = {
@@ -16,7 +23,19 @@ const emptyForm: ContactFormData = {
   phone: '',
   email: '',
   working_hours: '',
+  instagram_url: '',
+  facebook_url: '',
+  linkedin_url: '',
+  whatsapp_url: '',
+  footer_tagline: '',
+  footer_copyright: '',
+  footer_credit: '',
 }
+
+const inputClass =
+  'w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40 focus:outline-none focus:border-[#D4654A] transition-colors'
+const labelClass = 'block font-josefin text-[#F5E6D0] text-sm mb-2'
+const cardClass = 'bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10'
 
 export default function ContactInfoPage() {
   const [formData, setFormData] = useState<ContactFormData>(emptyForm)
@@ -38,6 +57,13 @@ export default function ContactInfoPage() {
           phone: data.contactInfo.phone || '',
           email: data.contactInfo.email || '',
           working_hours: data.contactInfo.workingHours || '',
+          instagram_url: data.contactInfo.instagramUrl || '',
+          facebook_url: data.contactInfo.facebookUrl || '',
+          linkedin_url: data.contactInfo.linkedinUrl || '',
+          whatsapp_url: data.contactInfo.whatsappUrl || '',
+          footer_tagline: data.contactInfo.footerTagline || '',
+          footer_copyright: data.contactInfo.footerCopyright || '',
+          footer_credit: data.contactInfo.footerCredit || '',
         })
       }
     } catch (error) {
@@ -67,7 +93,9 @@ export default function ContactInfoPage() {
       toast.success('Contact info saved successfully')
     } catch (error) {
       console.error('Save contact info error:', error)
-      toast.error(error instanceof Error ? error.message : 'Failed to save contact info')
+      toast.error(
+        error instanceof Error ? error.message : 'Failed to save contact info'
+      )
     } finally {
       setSaving(false)
     }
@@ -89,103 +117,230 @@ export default function ContactInfoPage() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-cormorant text-4xl md:text-5xl text-[#F5E6D0] mb-2">
-          Contact Info
+          Contact &amp; Footer
         </h1>
         <p className="font-josefin text-[#D4B896] text-sm">
-          Manage your studio contact details
+          Manage office contact details, social links, and footer text shown
+          across the site
         </p>
       </div>
 
-      <div className="bg-[#1A2332] rounded-xl p-6 border border-[#F5E6D0]/10">
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Address */}
-          <div>
-            <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
-              Address
-            </label>
-            <textarea
-              value={formData.address}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, address: e.target.value }))
-              }
-              rows={3}
-              className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
-                font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
-                focus:outline-none focus:border-[#D4654A] transition-colors resize-none"
-              placeholder="e.g., 123 Architecture Ave, Suite 100, New York, NY 10001"
-            />
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* ── Office Contact ── */}
+        <div className={cardClass}>
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-6">
+            Office Contact
+          </h3>
+          <div className="space-y-6">
+            <div>
+              <label className={labelClass}>Address</label>
+              <textarea
+                value={formData.address}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, address: e.target.value }))
+                }
+                rows={3}
+                className={`${inputClass} resize-none`}
+                placeholder="e.g., 123 Architecture Lane, Mumbai 400001"
+              />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Phone</label>
+                <input
+                  type="text"
+                  value={formData.phone}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                  }
+                  className={inputClass}
+                  placeholder="e.g., +91 99999 99999"
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Email</label>
+                <input
+                  type="text"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, email: e.target.value }))
+                  }
+                  className={inputClass}
+                  placeholder="e.g., hello@formastudio.in"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={labelClass}>Working Hours</label>
+              <input
+                type="text"
+                value={formData.working_hours}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    working_hours: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="e.g., Mon - Fri: 9:00 AM - 6:00 PM | Sat: 10:00 AM - 2:00 PM"
+              />
+              <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                Use &ldquo;|&rdquo; to split lines on the contact page.
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Phone */}
-          <div>
-            <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
-              Phone
-            </label>
-            <input
-              type="text"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, phone: e.target.value }))
-              }
-              className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
-                font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
-                focus:outline-none focus:border-[#D4654A] transition-colors"
-              placeholder="e.g., +1 (555) 123-4567"
-            />
+        {/* ── Social Links ── */}
+        <div className={cardClass}>
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-2">
+            Social Links
+          </h3>
+          <p className="font-josefin text-[#D4B896]/60 text-xs mb-6">
+            Used by the footer and the contact page. Leave a field blank to
+            hide that platform&rsquo;s icon.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>Instagram URL</label>
+              <input
+                type="text"
+                value={formData.instagram_url}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    instagram_url: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="https://instagram.com/formastudio"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Facebook URL</label>
+              <input
+                type="text"
+                value={formData.facebook_url}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    facebook_url: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="https://facebook.com/formastudio"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>LinkedIn URL</label>
+              <input
+                type="text"
+                value={formData.linkedin_url}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    linkedin_url: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="https://linkedin.com/company/formastudio"
+              />
+            </div>
+            <div>
+              <label className={labelClass}>WhatsApp URL</label>
+              <input
+                type="text"
+                value={formData.whatsapp_url}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    whatsapp_url: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="https://wa.me/919999999999"
+              />
+              <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                Also powers the floating WhatsApp button.
+              </p>
+            </div>
           </div>
+        </div>
 
-          {/* Email */}
-          <div>
-            <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
-              Email
-            </label>
-            <input
-              type="text"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, email: e.target.value }))
-              }
-              className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
-                font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
-                focus:outline-none focus:border-[#D4654A] transition-colors"
-              placeholder="e.g., hello@formastudio.com"
-            />
+        {/* ── Footer Text ── */}
+        <div className={cardClass}>
+          <h3 className="font-cormorant text-2xl text-[#F5E6D0] mb-2">
+            Footer Text
+          </h3>
+          <p className="font-josefin text-[#D4B896]/60 text-xs mb-6">
+            Branding lines shown in the global footer.
+          </p>
+          <div className="space-y-4">
+            <div>
+              <label className={labelClass}>Brand Tagline</label>
+              <input
+                type="text"
+                value={formData.footer_tagline}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    footer_tagline: e.target.value,
+                  }))
+                }
+                className={inputClass}
+                placeholder="Design with intent. Build with passion."
+              />
+              <p className="font-josefin text-[#D4B896]/60 text-xs mt-1">
+                Sits under the logo in the footer.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className={labelClass}>Copyright</label>
+                <input
+                  type="text"
+                  value={formData.footer_copyright}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      footer_copyright: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="© 2026 Forma Studio. All rights reserved."
+                />
+              </div>
+              <div>
+                <label className={labelClass}>Credit Line</label>
+                <input
+                  type="text"
+                  value={formData.footer_credit}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      footer_credit: e.target.value,
+                    }))
+                  }
+                  className={inputClass}
+                  placeholder="Crafted with passion"
+                />
+              </div>
+            </div>
           </div>
+        </div>
 
-          {/* Working Hours */}
-          <div>
-            <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
-              Working Hours
-            </label>
-            <input
-              type="text"
-              value={formData.working_hours}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, working_hours: e.target.value }))
-              }
-              className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
-                font-josefin text-[#F5E6D0] placeholder-[#D4B896]/40
-                focus:outline-none focus:border-[#D4654A] transition-colors"
-              placeholder="e.g., Mon - Fri: 9:00 AM - 6:00 PM | Sat: 10:00 AM - 2:00 PM"
-            />
-          </div>
-
-          {/* Save Button */}
-          <div className="flex justify-end pt-4 border-t border-[#F5E6D0]/10">
-            <button
-              type="submit"
-              className="px-8 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
-                hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
-                transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
-                flex items-center gap-2"
-              disabled={saving}
-            >
-              <Save className="w-4 h-4" />
-              {saving ? 'Saving...' : 'Save Contact Info'}
-            </button>
-          </div>
-        </form>
-      </div>
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <button
+            type="submit"
+            className="px-8 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            disabled={saving}
+          >
+            <Save className="w-4 h-4" />
+            {saving ? 'Saving...' : 'Save Contact &amp; Footer'}
+          </button>
+        </div>
+      </form>
     </div>
   )
 }

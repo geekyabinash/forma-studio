@@ -4,25 +4,36 @@ import { InstagramIcon, FacebookIcon, LinkedinIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
+export interface SocialUrls {
+  instagram?: string;
+  facebook?: string;
+  linkedin?: string;
+  whatsapp?: string;
+}
+
 interface SocialLinksProps {
   className?: string;
   iconSize?: number;
+  urls?: SocialUrls;
 }
-
-const socialItems = [
-  { label: 'Instagram', href: '#', icon: InstagramIcon },
-  { label: 'Facebook', href: '#', icon: FacebookIcon },
-  { label: 'LinkedIn', href: '#', icon: LinkedinIcon },
-  { label: 'WhatsApp', href: '#', icon: WhatsAppIcon },
-];
 
 export default function SocialLinks({
   className,
   iconSize = 20,
+  urls,
 }: SocialLinksProps) {
+  const items = [
+    { label: 'Instagram', href: urls?.instagram, icon: InstagramIcon },
+    { label: 'Facebook', href: urls?.facebook, icon: FacebookIcon },
+    { label: 'LinkedIn', href: urls?.linkedin, icon: LinkedinIcon },
+    { label: 'WhatsApp', href: urls?.whatsapp, icon: WhatsAppIcon },
+  ].filter((item) => item.href && item.href.trim().length > 0);
+
+  if (items.length === 0) return null;
+
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      {socialItems.map((item) => (
+      {items.map((item) => (
         <a
           key={item.label}
           href={item.href}

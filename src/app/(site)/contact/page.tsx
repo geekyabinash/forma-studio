@@ -16,6 +16,10 @@ interface ContactInfoData {
   phone: string;
   email: string;
   workingHours: string;
+  instagramUrl: string;
+  facebookUrl: string;
+  linkedinUrl: string;
+  whatsappUrl: string;
 }
 
 export default function ContactPage() {
@@ -25,6 +29,10 @@ export default function ContactPage() {
     phone: '+91 99999 99999',
     email: 'hello@formastudio.in',
     workingHours: 'Mon - Fri: 9:00 AM - 6:00 PM | Sat: 10:00 AM - 2:00 PM',
+    instagramUrl: '',
+    facebookUrl: '',
+    linkedinUrl: '',
+    whatsappUrl: '',
   });
 
   useEffect(() => {
@@ -33,19 +41,25 @@ export default function ContactPage() {
         const response = await fetch('/api/contact-info');
         const data = await response.json();
         if (data.contactInfo) {
-          setInfo({
-            address: data.contactInfo.address || info.address,
-            phone: data.contactInfo.phone || info.phone,
-            email: data.contactInfo.email || info.email,
-            workingHours: data.contactInfo.workingHours || data.contactInfo.working_hours || info.workingHours,
-          });
+          setInfo((prev) => ({
+            address: data.contactInfo.address || prev.address,
+            phone: data.contactInfo.phone || prev.phone,
+            email: data.contactInfo.email || prev.email,
+            workingHours:
+              data.contactInfo.workingHours ||
+              data.contactInfo.working_hours ||
+              prev.workingHours,
+            instagramUrl: data.contactInfo.instagramUrl || '',
+            facebookUrl: data.contactInfo.facebookUrl || '',
+            linkedinUrl: data.contactInfo.linkedinUrl || '',
+            whatsappUrl: data.contactInfo.whatsappUrl || '',
+          }));
         }
       } catch {
         // Use fallback defaults silently
       }
     }
     fetchContactInfo();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {
@@ -305,7 +319,14 @@ export default function ContactPage() {
 
               {/* Social Links */}
               <div className="mt-8">
-                <SocialLinks />
+                <SocialLinks
+                  urls={{
+                    instagram: info.instagramUrl,
+                    facebook: info.facebookUrl,
+                    linkedin: info.linkedinUrl,
+                    whatsapp: info.whatsappUrl,
+                  }}
+                />
               </div>
 
               {/* Map Placeholder */}

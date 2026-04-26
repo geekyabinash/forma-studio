@@ -7,6 +7,7 @@ import {
   galleryItems,
   projects as projectsTable,
   homeContent,
+  contactInfo,
 } from '@/lib/db/schema'
 import { asc, eq, and } from 'drizzle-orm'
 import type {
@@ -294,7 +295,19 @@ export interface HomeContent {
   aboutSnippetCtaText: string
   aboutSnippetImage: { url: string; alt: string; width: number; height: number }
   featuredWorkLabel: string
+  featuredWorkEyebrow: string
+  featuredWorkDescription: string
+  featuredWorkProjectSlugs: string[]
+  featuredWorkLimit: number
+  featuredWorkCtaText: string
+  featuredWorkCtaLink: string
   servicesLabel: string
+  servicesEyebrow: string
+  servicesDescription: string
+  servicesServiceSlugs: string[]
+  servicesLimit: number
+  servicesCtaText: string
+  servicesCtaLink: string
   ctaHeading: string
   ctaSubtitle: string
   ctaButtonText: string
@@ -336,7 +349,19 @@ export const HOME_CONTENT_DEFAULTS: HomeContent = {
     height: 800,
   },
   featuredWorkLabel: 'Featured Work',
+  featuredWorkEyebrow: '',
+  featuredWorkDescription: '',
+  featuredWorkProjectSlugs: [],
+  featuredWorkLimit: 0,
+  featuredWorkCtaText: '',
+  featuredWorkCtaLink: '/projects',
   servicesLabel: 'What We Do',
+  servicesEyebrow: '',
+  servicesDescription: '',
+  servicesServiceSlugs: [],
+  servicesLimit: 0,
+  servicesCtaText: '',
+  servicesCtaLink: '/services',
   ctaHeading: "Let's build something remarkable.",
   ctaSubtitle:
     "Ready to transform your vision into reality? Let's start a conversation.",
@@ -372,7 +397,32 @@ function transformHomeContent(row: HomeContentRow): HomeContent {
       row.aboutSnippetImage ?? HOME_CONTENT_DEFAULTS.aboutSnippetImage,
     featuredWorkLabel:
       row.featuredWorkLabel ?? HOME_CONTENT_DEFAULTS.featuredWorkLabel,
+    featuredWorkEyebrow:
+      row.featuredWorkEyebrow ?? HOME_CONTENT_DEFAULTS.featuredWorkEyebrow,
+    featuredWorkDescription:
+      row.featuredWorkDescription ??
+      HOME_CONTENT_DEFAULTS.featuredWorkDescription,
+    featuredWorkProjectSlugs:
+      row.featuredWorkProjectSlugs ??
+      HOME_CONTENT_DEFAULTS.featuredWorkProjectSlugs,
+    featuredWorkLimit:
+      row.featuredWorkLimit ?? HOME_CONTENT_DEFAULTS.featuredWorkLimit,
+    featuredWorkCtaText:
+      row.featuredWorkCtaText ?? HOME_CONTENT_DEFAULTS.featuredWorkCtaText,
+    featuredWorkCtaLink:
+      row.featuredWorkCtaLink ?? HOME_CONTENT_DEFAULTS.featuredWorkCtaLink,
     servicesLabel: row.servicesLabel ?? HOME_CONTENT_DEFAULTS.servicesLabel,
+    servicesEyebrow:
+      row.servicesEyebrow ?? HOME_CONTENT_DEFAULTS.servicesEyebrow,
+    servicesDescription:
+      row.servicesDescription ?? HOME_CONTENT_DEFAULTS.servicesDescription,
+    servicesServiceSlugs:
+      row.servicesServiceSlugs ?? HOME_CONTENT_DEFAULTS.servicesServiceSlugs,
+    servicesLimit: row.servicesLimit ?? HOME_CONTENT_DEFAULTS.servicesLimit,
+    servicesCtaText:
+      row.servicesCtaText ?? HOME_CONTENT_DEFAULTS.servicesCtaText,
+    servicesCtaLink:
+      row.servicesCtaLink ?? HOME_CONTENT_DEFAULTS.servicesCtaLink,
     ctaHeading: row.ctaHeading ?? HOME_CONTENT_DEFAULTS.ctaHeading,
     ctaSubtitle: row.ctaSubtitle ?? HOME_CONTENT_DEFAULTS.ctaSubtitle,
     ctaButtonText: row.ctaButtonText ?? HOME_CONTENT_DEFAULTS.ctaButtonText,
@@ -390,6 +440,60 @@ export async function getHomeContent(): Promise<HomeContent> {
       err
     )
     return HOME_CONTENT_DEFAULTS
+  }
+}
+
+export interface ContactSiteInfo {
+  address: string
+  phone: string
+  email: string
+  workingHours: string
+  instagramUrl: string
+  facebookUrl: string
+  linkedinUrl: string
+  whatsappUrl: string
+  footerTagline: string
+  footerCopyright: string
+  footerCredit: string
+}
+
+export const CONTACT_SITE_INFO_DEFAULTS: ContactSiteInfo = {
+  address: '123 Architecture Lane, Mumbai 400001',
+  phone: '+91 99999 99999',
+  email: 'hello@formastudio.in',
+  workingHours: 'Mon - Fri: 9:00 AM - 6:00 PM | Sat: 10:00 AM - 2:00 PM',
+  instagramUrl: '',
+  facebookUrl: '',
+  linkedinUrl: '',
+  whatsappUrl: '',
+  footerTagline: 'Design with intent. Build with passion.',
+  footerCopyright: `© ${new Date().getFullYear()} Forma Studio. All rights reserved.`,
+  footerCredit: 'Crafted with passion',
+}
+
+export async function getContactSiteInfo(): Promise<ContactSiteInfo> {
+  try {
+    const [row] = await db.select().from(contactInfo).limit(1)
+    if (!row) return CONTACT_SITE_INFO_DEFAULTS
+    return {
+      address: row.address ?? CONTACT_SITE_INFO_DEFAULTS.address,
+      phone: row.phone ?? CONTACT_SITE_INFO_DEFAULTS.phone,
+      email: row.email ?? CONTACT_SITE_INFO_DEFAULTS.email,
+      workingHours: row.workingHours ?? CONTACT_SITE_INFO_DEFAULTS.workingHours,
+      instagramUrl: row.instagramUrl ?? '',
+      facebookUrl: row.facebookUrl ?? '',
+      linkedinUrl: row.linkedinUrl ?? '',
+      whatsappUrl: row.whatsappUrl ?? '',
+      footerTagline:
+        row.footerTagline ?? CONTACT_SITE_INFO_DEFAULTS.footerTagline,
+      footerCopyright:
+        row.footerCopyright ?? CONTACT_SITE_INFO_DEFAULTS.footerCopyright,
+      footerCredit:
+        row.footerCredit ?? CONTACT_SITE_INFO_DEFAULTS.footerCredit,
+    }
+  } catch (err) {
+    console.error('[getContactSiteInfo] DB fetch failed, using defaults:', err)
+    return CONTACT_SITE_INFO_DEFAULTS
   }
 }
 
