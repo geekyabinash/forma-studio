@@ -156,9 +156,15 @@ export default function ServicesContent({ services }: { services: Service[] }) {
       </section>
 
       {/* Service sections */}
-      {services.map((service, index) => (
-        <ServiceSection key={service.id} service={service} index={index} />
-      ))}
+      {services.length > 0 ? (
+        services.map((service, index) => (
+          <ServiceSection key={service.id} service={service} index={index} />
+        ))
+      ) : (
+        <p className="text-center text-mid-gray py-20 font-sans">
+          No services to display yet.
+        </p>
+      )}
     </>
   );
 }

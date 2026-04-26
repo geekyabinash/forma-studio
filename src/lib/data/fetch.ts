@@ -17,14 +17,6 @@ import type {
   CultureValue,
   Project,
 } from '@/types'
-import { services as staticServices } from '@/data/services'
-import {
-  positions as staticPositions,
-  benefits as staticBenefits,
-  cultureValues as staticCultureValues,
-} from '@/data/careers'
-import { projects as staticProjects } from '@/data/projects'
-
 // ---------------------------------------------------------------------------
 // Transform helpers  (Drizzle camelCase row  -->  frontend types)
 // ---------------------------------------------------------------------------
@@ -128,12 +120,10 @@ export async function getServices(): Promise<Service[]> {
       .from(servicesTable)
       .orderBy(asc(servicesTable.sortOrder))
 
-    if (!data || data.length === 0) return staticServices
-
     return data.map(transformService)
   } catch (err) {
-    console.error('[getServices] DB fetch failed, using static fallback:', err)
-    return staticServices
+    console.error('[getServices] DB fetch failed:', err)
+    return []
   }
 }
 
@@ -145,15 +135,10 @@ export async function getCareerPositions(): Promise<JobPosition[]> {
       .where(eq(careerPositions.isActive, true))
       .orderBy(asc(careerPositions.sortOrder))
 
-    if (!data || data.length === 0) return staticPositions
-
     return data.map(transformPosition)
   } catch (err) {
-    console.error(
-      '[getCareerPositions] DB fetch failed, using static fallback:',
-      err
-    )
-    return staticPositions
+    console.error('[getCareerPositions] DB fetch failed:', err)
+    return []
   }
 }
 
@@ -164,15 +149,10 @@ export async function getCareerBenefits(): Promise<Benefit[]> {
       .from(careerBenefits)
       .orderBy(asc(careerBenefits.sortOrder))
 
-    if (!data || data.length === 0) return staticBenefits
-
     return data.map(transformBenefit)
   } catch (err) {
-    console.error(
-      '[getCareerBenefits] DB fetch failed, using static fallback:',
-      err
-    )
-    return staticBenefits
+    console.error('[getCareerBenefits] DB fetch failed:', err)
+    return []
   }
 }
 
@@ -183,15 +163,10 @@ export async function getCareerValues(): Promise<CultureValue[]> {
       .from(careerValues)
       .orderBy(asc(careerValues.sortOrder))
 
-    if (!data || data.length === 0) return staticCultureValues
-
     return data.map(transformValue)
   } catch (err) {
-    console.error(
-      '[getCareerValues] DB fetch failed, using static fallback:',
-      err
-    )
-    return staticCultureValues
+    console.error('[getCareerValues] DB fetch failed:', err)
+    return []
   }
 }
 
@@ -271,12 +246,10 @@ export async function getProjects(): Promise<Project[]> {
       .from(projectsTable)
       .orderBy(asc(projectsTable.sortOrder))
 
-    if (!data || data.length === 0) return staticProjects
-
     return data.map(transformProject)
   } catch (err) {
-    console.error('[getProjects] DB fetch failed, using static fallback:', err)
-    return staticProjects
+    console.error('[getProjects] DB fetch failed:', err)
+    return []
   }
 }
 
