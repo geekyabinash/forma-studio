@@ -245,6 +245,7 @@ export default function HomeContentPage() {
   const [saving, setSaving] = useState(false)
   const [availableProjects, setAvailableProjects] = useState<PickerItem[]>([])
   const [availableServices, setAvailableServices] = useState<PickerItem[]>([])
+  const [pickerLoading, setPickerLoading] = useState(true)
 
   useEffect(() => {
     fetchHomeContent()
@@ -253,36 +254,14 @@ export default function HomeContentPage() {
 
   const fetchPickerData = async () => {
     try {
-      const [projectsRes, servicesRes] = await Promise.all([
-        fetch('/api/admin/projects'),
-        fetch('/api/admin/services'),
-      ])
-      const projectsJson = await projectsRes.json()
-      const servicesJson = await servicesRes.json()
-      setAvailableProjects(
-        (projectsJson.projects ?? []).map(
-          (p: {
-            slug: string
-            title: string
-            heroImage?: { url?: string } | null
-          }) => ({
-            slug: p.slug,
-            title: p.title,
-            imageUrl: p.heroImage?.url ?? '',
-          })
-        )
-      )
-      setAvailableServices(
-        (servicesJson.services ?? []).map(
-          (s: { slug: string; title: string; imageUrl?: string | null }) => ({
-            slug: s.slug,
-            title: s.title,
-            imageUrl: s.imageUrl ?? '',
-          })
-        )
-      )
+      const res = await fetch('/api/admin/home/picker-options')
+      const data = await res.json()
+      setAvailableProjects(data.projects ?? [])
+      setAvailableServices(data.services ?? [])
     } catch (error) {
       console.error('Failed to fetch picker data:', error)
+    } finally {
+      setPickerLoading(false)
     }
   }
 
@@ -816,8 +795,10 @@ export default function HomeContentPage() {
             <div>
               <label className={labelClass}>Project Selection</label>
               <p className="font-josefin text-[#D4B896]/60 text-xs mb-3">
-                {availableProjects.length === 0
+                {pickerLoading
                   ? 'Loading projects…'
+                  : availableProjects.length === 0
+                  ? 'No projects found. Add projects in the Projects admin first.'
                   : 'Tick projects to include them. Use the arrows to set display order. Leave all unchecked to use the global Featured flag.'}
               </p>
               <SlugPicker
@@ -950,8 +931,10 @@ export default function HomeContentPage() {
             <div>
               <label className={labelClass}>Service Selection</label>
               <p className="font-josefin text-[#D4B896]/60 text-xs mb-3">
-                {availableServices.length === 0
+                {pickerLoading
                   ? 'Loading services…'
+                  : availableServices.length === 0
+                  ? 'No services found. Add services in the Services admin first.'
                   : 'Tick services to include them. Use the arrows to set display order. Leave all unchecked to show every service.'}
               </p>
               <SlugPicker
