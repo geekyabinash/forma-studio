@@ -4,6 +4,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { ScrollTrigger, useGSAP } from '@/hooks/useGSAPSetup';
 import { animateStrokeDraw } from '@/lib/animations';
+import { resolveServiceIconPath } from '@/lib/service-icons';
 import type { Service } from '@/types';
 import SectionHeading from '@/components/ui/SectionHeading';
 import ScrollReveal from '@/components/animations/ScrollReveal';
@@ -34,6 +35,7 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
   );
 
   const firstSentence = service.description.split('.')[0] + '.';
+  const iconPath = resolveServiceIconPath(service.icon);
 
   return (
     <ScrollReveal direction="up" delay={index * 0.12}>
@@ -49,9 +51,11 @@ function ServiceCard({ service, index }: { service: Service; index: number }) {
           stroke="currentColor"
           strokeWidth={1.5}
           fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
           className="text-gold group-hover:text-coral transition-colors duration-500"
         >
-          <path ref={pathRef} d={service.icon} />
+          <path ref={pathRef} d={iconPath} />
         </svg>
 
         {/* Title */}

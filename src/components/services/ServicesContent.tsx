@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ScrollTrigger, useGSAP } from '@/hooks/useGSAPSetup';
 import { animateStrokeDraw } from '@/lib/animations';
+import { resolveServiceIconPath } from '@/lib/service-icons';
 import type { Service } from '@/types';
 import SplitTextReveal from '@/components/animations/SplitTextReveal';
 import ScrollReveal from '@/components/animations/ScrollReveal';
@@ -83,9 +84,11 @@ function ServiceSection({
               stroke="currentColor"
               strokeWidth={1.5}
               fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               className="text-coral"
             >
-              <path ref={pathRef} d={service.icon} />
+              <path ref={pathRef} d={resolveServiceIconPath(service.icon)} />
             </svg>
 
             {/* Title */}

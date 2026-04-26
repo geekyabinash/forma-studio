@@ -6,6 +6,10 @@ import { ArrowLeft, Plus, X, Eye, EyeOff } from 'lucide-react'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { toast } from 'sonner'
 import { serviceSchema, type ServiceFormValues } from '@/lib/schemas'
+import {
+  SERVICE_ICON_PRESETS,
+  resolveServiceIconPath,
+} from '@/lib/service-icons'
 
 interface Service extends ServiceFormValues {
   id: string
@@ -242,22 +246,70 @@ export default function EditServicePage() {
               />
             </div>
 
-            {/* Icon SVG Path */}
+            {/* Icon */}
             <div>
               <label className="block font-josefin text-[#F5E6D0] text-sm mb-2">
-                Icon SVG Path (Optional)
+                Icon
               </label>
-              <textarea
-                value={formData.icon}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, icon: e.target.value }))
-                }
-                rows={3}
-                className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
-                  font-josefin text-[#D4B896] placeholder-[#D4B896]/40 text-sm font-mono
-                  focus:outline-none focus:border-[#D4654A] transition-colors resize-none"
-                placeholder="e.g., M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z"
-              />
+              <p className="font-josefin text-[#D4B896]/60 text-xs mb-3">
+                Pick a preset, or paste a custom SVG path. Leave blank for the
+                default building icon.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-3">
+                {SERVICE_ICON_PRESETS.map((preset) => {
+                  const isActive = formData.icon === preset.key
+                  return (
+                    <button
+                      type="button"
+                      key={preset.key}
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, icon: preset.key }))
+                      }
+                      className={`flex flex-col items-center gap-2 p-3 rounded-lg border transition-all ${
+                        isActive
+                          ? 'border-[#D4654A] bg-[#D4654A]/10'
+                          : 'border-[#F5E6D0]/15 bg-[#141B2B] hover:border-[#D4654A]/40'
+                      }`}
+                      title={preset.label}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        width={32}
+                        height={32}
+                        stroke="currentColor"
+                        strokeWidth={1.5}
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={
+                          isActive ? 'text-[#D4654A]' : 'text-[#D4B896]'
+                        }
+                      >
+                        <path d={preset.path} />
+                      </svg>
+                      <span className="font-josefin text-[10px] text-[#F5E6D0] text-center leading-tight">
+                        {preset.label}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+              <details className="text-xs">
+                <summary className="cursor-pointer font-josefin text-[#D4B896] hover:text-[#D4654A]">
+                  Use a custom SVG path instead
+                </summary>
+                <textarea
+                  value={formData.icon}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, icon: e.target.value }))
+                  }
+                  rows={3}
+                  className="mt-2 w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
+                    font-josefin text-[#D4B896] placeholder-[#D4B896]/40 text-sm font-mono
+                    focus:outline-none focus:border-[#D4654A] transition-colors resize-none"
+                  placeholder="e.g., M12 2l8 4.5v11L12 22l-8-4.5v-11L12 2z"
+                />
+              </details>
             </div>
 
             {/* Features */}
@@ -385,21 +437,19 @@ export default function EditServicePage() {
           <div className="space-y-6">
             {/* Service Card Preview */}
             <div className="bg-[#141B2B] rounded-xl p-6 border border-[#F5E6D0]/10">
-              {formData.icon && (
-                <div className="mb-4">
-                  <svg
-                    className="w-12 h-12 text-[#D4654A]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d={formData.icon} />
-                  </svg>
-                </div>
-              )}
+              <div className="mb-4">
+                <svg
+                  className="w-12 h-12 text-[#D4654A]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d={resolveServiceIconPath(formData.icon)} />
+                </svg>
+              </div>
               <h4 className="font-cormorant text-2xl text-[#F5E6D0] mb-2">
                 {formData.title || 'Service Title'}
               </h4>
