@@ -1,14 +1,11 @@
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { NextResponse } from 'next/server'
 import { getProjects, getServices } from '@/lib/data/fetch'
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const [projects, services] = await Promise.all([
       getProjects(),
       getServices(),

@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import { projects } from '@/lib/db/schema'
 import { projectSchema } from '@/lib/schemas'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
@@ -11,11 +11,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     const [data] = await db
@@ -43,11 +40,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     const body = await request.json()
@@ -99,11 +93,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     await db.delete(projects).where(eq(projects.id, id))

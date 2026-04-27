@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { db } from '@/lib/db'
 import { users } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
@@ -8,10 +8,9 @@ import { changePasswordSchema } from '@/lib/validations/auth'
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
+    const { session } = authResult
 
     const body = await request.json()
     const parsed = changePasswordSchema.safeParse(body)

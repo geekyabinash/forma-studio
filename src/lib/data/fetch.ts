@@ -10,6 +10,7 @@ import {
   contactInfo,
 } from '@/lib/db/schema'
 import { asc, eq, and } from 'drizzle-orm'
+import { isGalleryCategory } from '@/lib/admin/options'
 import type {
   Service,
   JobPosition,
@@ -177,9 +178,10 @@ export async function getGalleryItems(filters?: {
   try {
     const conditions = []
     if (filters?.category) {
-      conditions.push(
-        eq(galleryItems.category, filters.category as any)
-      )
+      const category = filters.category
+      if (isGalleryCategory(category)) {
+        conditions.push(eq(galleryItems.category, category))
+      }
     }
     if (filters?.projectSlug) {
       conditions.push(eq(galleryItems.projectSlug, filters.projectSlug))

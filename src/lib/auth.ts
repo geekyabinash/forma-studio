@@ -36,8 +36,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             id: user.id,
             email: user.email,
             name: user.name,
-            mfaPending: user.mfaEnabled ?? false,
-            mfaMethod: user.mfaMethod ?? null,
           }
         } catch (error) {
           console.error('Auth authorize error:', error)
@@ -52,23 +50,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/error',
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.mfaPending = (user as any).mfaPending ?? false
-        token.mfaMethod = (user as any).mfaMethod ?? null
-      }
-      // Allow clearing mfaPending via session update
-      if (trigger === 'update') {
-        token.mfaPending = false
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
-        ;(session as any).mfaPending = token.mfaPending ?? false
-        ;(session as any).mfaMethod = token.mfaMethod ?? null
       }
       return session
     },
@@ -76,15 +66,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       const isLoggedIn = !!auth?.user
       const isAdminRoute = nextUrl.pathname.startsWith('/admin')
       const isMfaVerifyRoute = nextUrl.pathname === '/mfa-verify'
-      const mfaPending = (auth as any)?.mfaPending ?? false
 
-      // If MFA is pending, redirect to MFA verify page
-      if (isLoggedIn && mfaPending && !isMfaVerifyRoute) {
-        return Response.redirect(new URL('/mfa-verify', nextUrl))
-      }
-
-      // If MFA is verified, don't let them go back to MFA page
-      if (isLoggedIn && !mfaPending && isMfaVerifyRoute) {
+      // MFA is intentionally parked until the full verification flow is rebuilt.
+      if (isLoggedIn && isMfaVerifyRoute) {
         return Response.redirect(new URL('/admin', nextUrl))
       }
 

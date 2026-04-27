@@ -1,18 +1,15 @@
 import { db } from '@/lib/db'
 import { homeContent } from '@/lib/db/schema'
 import { homeContentSchema } from '@/lib/schemas'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const [data] = await db.select().from(homeContent).limit(1)
 
     return NextResponse.json({ home: data || null })
@@ -27,11 +24,8 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const body = await request.json()
     const result = homeContentSchema.safeParse(body)
     if (!result.success) {

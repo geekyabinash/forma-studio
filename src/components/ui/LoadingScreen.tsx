@@ -6,7 +6,10 @@ import gsap from 'gsap';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 export default function LoadingScreen() {
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return !sessionStorage.getItem('forma-loading-shown');
+  });
   const overlayRef = useRef<HTMLDivElement>(null);
   const bwLogoRef = useRef<HTMLDivElement>(null);
   const colorLogoRef = useRef<HTMLDivElement>(null);
@@ -17,7 +20,6 @@ export default function LoadingScreen() {
   useEffect(() => {
     // Check if already shown this session
     if (sessionStorage.getItem('forma-loading-shown') || prefersReducedMotion) {
-      setIsVisible(false);
       return;
     }
 
@@ -78,7 +80,7 @@ export default function LoadingScreen() {
     };
   }, [prefersReducedMotion]);
 
-  if (!isVisible) return null;
+  if (!isVisible || prefersReducedMotion) return null;
 
   return (
     <div

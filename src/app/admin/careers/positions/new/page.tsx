@@ -5,6 +5,12 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { careerPositionSchema, type CareerPositionValues } from '@/lib/schemas'
+import {
+  careerDepartmentOptions,
+  employmentTypeOptions,
+  type CareerDepartment,
+  type EmploymentType,
+} from '@/lib/admin/options'
 
 export default function NewPositionPage() {
   const router = useRouter()
@@ -139,17 +145,18 @@ export default function NewPositionPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    department: e.target.value as any,
+                    department: e.target.value as CareerDepartment,
                   }))
                 }
                 className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
                   font-josefin text-[#F5E6D0] focus:outline-none focus:border-[#D4654A] transition-colors"
                 required
               >
-                <option value="architecture">Architecture</option>
-                <option value="interior-design">Interior Design</option>
-                <option value="engineering">Engineering</option>
-                <option value="management">Management</option>
+                {careerDepartmentOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -162,16 +169,18 @@ export default function NewPositionPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    employment_type: e.target.value as any,
+                    employment_type: e.target.value as EmploymentType,
                   }))
                 }
                 className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
                   font-josefin text-[#F5E6D0] focus:outline-none focus:border-[#D4654A] transition-colors"
                 required
               >
-                <option value="full-time">Full-Time</option>
-                <option value="part-time">Part-Time</option>
-                <option value="internship">Internship</option>
+                {employmentTypeOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

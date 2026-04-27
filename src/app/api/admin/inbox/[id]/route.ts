@@ -1,20 +1,19 @@
 import { db } from '@/lib/db'
 import { formSubmissions } from '@/lib/db/schema'
 import { submissionUpdateSchema } from '@/lib/schemas'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
+
+type SubmissionUpdateData = Partial<typeof formSubmissions.$inferInsert>
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     // Fetch submission by ID
@@ -43,11 +42,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     // Parse and validate request body
@@ -59,7 +55,7 @@ export async function PUT(
     const validatedData = result.data
 
     // Update submission
-    const updateData: Record<string, any> = { ...validatedData }
+    const updateData: SubmissionUpdateData = { ...validatedData }
 
     // If marking as read, set readAt timestamp
     if (validatedData.status === 'read') {
@@ -91,11 +87,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const { id } = await params
 
     // Delete submission

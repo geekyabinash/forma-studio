@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactLenis } from 'lenis/react';
+import type { LenisRef } from 'lenis/react';
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -8,7 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
-  const lenisRef = useRef<any>(null);
+  const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {
     function update(time: number) {

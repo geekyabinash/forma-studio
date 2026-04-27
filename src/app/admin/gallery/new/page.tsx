@@ -6,6 +6,10 @@ import { ArrowLeft } from 'lucide-react'
 import ImageUploader from '@/components/admin/ImageUploader'
 import { toast } from 'sonner'
 import { galleryItemSchema, type GalleryItemValues } from '@/lib/schemas'
+import {
+  galleryCategoryOptions,
+  type GalleryCategory,
+} from '@/lib/admin/options'
 
 export default function NewGalleryItemPage() {
   const router = useRouter()
@@ -138,16 +142,17 @@ export default function NewGalleryItemPage() {
                 onChange={(e) =>
                   setFormData((prev) => ({
                     ...prev,
-                    category: e.target.value as any,
+                    category: e.target.value as GalleryCategory,
                   }))
                 }
                 className="w-full px-4 py-3 bg-[#141B2B] border border-[#F5E6D0]/20 rounded-lg
                   font-josefin text-[#F5E6D0] focus:outline-none focus:border-[#D4654A] transition-colors"
               >
-                <option value="architecture">Architecture</option>
-                <option value="interiors">Interiors</option>
-                <option value="details">Details</option>
-                <option value="process">Process</option>
+                {galleryCategoryOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
             </div>
 

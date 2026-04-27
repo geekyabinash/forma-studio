@@ -1,7 +1,7 @@
 import { db } from '@/lib/db'
 import { navigationSettings } from '@/lib/db/schema'
 import { navigationSettingsSchema } from '@/lib/schemas'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { NextResponse } from 'next/server'
 import { eq } from 'drizzle-orm'
 import { revalidateTag } from 'next/cache'
@@ -17,11 +17,8 @@ const DEFAULT_VISIBILITY: Record<string, boolean> = {
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const [data] = await db.select().from(navigationSettings).limit(1)
 
     return NextResponse.json({
@@ -38,11 +35,8 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     const body = await request.json()
     const result = navigationSettingsSchema.safeParse(body)
     if (!result.success) {

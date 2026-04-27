@@ -1,16 +1,14 @@
 import { db } from '@/lib/db'
 import { formSubmissions } from '@/lib/db/schema'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
+import { isSubmissionStatus, isSubmissionType } from '@/lib/admin/options'
 import { NextResponse } from 'next/server'
 import { eq, desc, and } from 'drizzle-orm'
 
 export async function GET(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     // Parse query params
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type') // 'contact' | 'career' | null (all)
@@ -18,8 +16,12 @@ export async function GET(request: Request) {
 
     // Build dynamic where conditions
     const conditions = []
-    if (type) conditions.push(eq(formSubmissions.type, type as any))
-    if (status) conditions.push(eq(formSubmissions.status, status as any))
+    if (type && isSubmissionType(type)) {
+      conditions.push(eq(formSubmissions.type, type))
+    }
+    if (status && isSubmissionStatus(status)) {
+      conditions.push(eq(formSubmissions.status, status))
+    }
 
     const data = await db
       .select()

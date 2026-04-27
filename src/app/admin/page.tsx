@@ -1,4 +1,5 @@
-import { Briefcase, Users, Image, Mail, FolderOpen, FileText, Phone } from 'lucide-react'
+import Link from 'next/link'
+import { Briefcase, Users, Image as ImageIcon, Mail, FolderOpen, FileText, Phone } from 'lucide-react'
 import { db } from '@/lib/db'
 import { services, careerPositions, galleryItems, formSubmissions, projects } from '@/lib/db/schema'
 import { count, eq } from 'drizzle-orm'
@@ -52,7 +53,7 @@ export default async function AdminDashboard() {
     {
       name: 'Gallery Images',
       value: String(galleryCount),
-      icon: Image,
+      icon: ImageIcon,
       color: 'from-[#F5E6D0]/20 to-[#F5E6D0]/5',
       iconColor: 'text-[#F5E6D0]',
     },
@@ -117,7 +118,7 @@ export default async function AdminDashboard() {
           Quick Actions
         </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-          <a
+          <Link
             href="/admin/projects/new"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
@@ -125,9 +126,9 @@ export default async function AdminDashboard() {
           >
             <FolderOpen className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Add New Project</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/services/new"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
@@ -135,9 +136,9 @@ export default async function AdminDashboard() {
           >
             <Briefcase className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Add New Service</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/careers"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
@@ -145,19 +146,19 @@ export default async function AdminDashboard() {
           >
             <Users className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Manage Careers</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/gallery"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
               transition-all duration-300 group"
           >
-            <Image className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
+            <ImageIcon className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Upload to Gallery</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/about"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
@@ -165,9 +166,9 @@ export default async function AdminDashboard() {
           >
             <FileText className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Edit About Page</p>
-          </a>
+          </Link>
 
-          <a
+          <Link
             href="/admin/contact"
             className="p-4 bg-[#141B2B] rounded-lg border border-[#F5E6D0]/10
               hover:border-[#D4654A] hover:bg-[#D4654A]/5
@@ -175,7 +176,7 @@ export default async function AdminDashboard() {
           >
             <Phone className="w-5 h-5 text-[#D4B896] group-hover:text-[#D4654A] mb-2 transition-colors" />
             <p className="font-josefin text-[#F5E6D0] text-sm">Edit Contact Info</p>
-          </a>
+          </Link>
         </div>
       </div>
 

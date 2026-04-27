@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Mail, Briefcase, Filter, Eye, Archive, Trash2, X } from 'lucide-react'
 import ConfirmDialog from '@/components/admin/ConfirmDialog'
 import { toast } from 'sonner'
@@ -8,10 +8,15 @@ import { toast } from 'sonner'
 type SubmissionType = 'contact' | 'career'
 type StatusFilter = 'all' | 'unread' | 'read' | 'archived'
 
+function submissionField(data: Submission['data'], key: string) {
+  const value = data[key]
+  return typeof value === 'string' ? value : ''
+}
+
 interface Submission {
   id: string
   type: SubmissionType
-  data: Record<string, any>
+  data: Record<string, unknown>
   status: string
   notes?: string
   submitted_at: string
@@ -20,7 +25,6 @@ interface Submission {
 
 export default function InboxPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([])
-  const [filteredSubmissions, setFilteredSubmissions] = useState<Submission[]>([])
   const [loading, setLoading] = useState(true)
   const [typeFilter, setTypeFilter] = useState<SubmissionType>('contact')
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
@@ -31,9 +35,15 @@ export default function InboxPage() {
     fetchSubmissions()
   }, [])
 
-  useEffect(() => {
-    applyFilters()
-  }, [typeFilter, statusFilter, submissions])
+  const filteredSubmissions = useMemo(() => {
+    let filtered = submissions.filter((sub) => sub.type === typeFilter)
+
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter((sub) => sub.status === statusFilter)
+    }
+
+    return filtered
+  }, [submissions, typeFilter, statusFilter])
 
   const fetchSubmissions = async () => {
     try {
@@ -46,16 +56,6 @@ export default function InboxPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const applyFilters = () => {
-    let filtered = submissions.filter((sub) => sub.type === typeFilter)
-
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter((sub) => sub.status === statusFilter)
-    }
-
-    setFilteredSubmissions(filtered)
   }
 
   const updateStatus = async (id: string, status: string, notes?: string) => {
@@ -239,12 +239,12 @@ export default function InboxPage() {
                       {formatDate(submission.submitted_at)}
                     </td>
                     <td className="p-4 font-josefin text-[#F5E6D0]">
-                      {submission.data.name}
+                      {submissionField(submission.data, 'name')}
                     </td>
                     <td className="p-4 font-josefin text-[#D4B896] text-sm capitalize">
                       {typeFilter === 'contact'
-                        ? submission.data.projectType?.replace('-', ' ')
-                        : submission.data.position}
+                        ? submissionField(submission.data, 'projectType').replace('-', ' ')
+                        : submissionField(submission.data, 'position')}
                     </td>
                     <td className="p-4">
                       <span
@@ -303,7 +303,7 @@ export default function InboxPage() {
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1 min-w-0">
                     <h3 className="font-josefin text-[#F5E6D0] font-medium truncate">
-                      {submission.data.name}
+                      {submissionField(submission.data, 'name')}
                     </h3>
                     <p className="font-josefin text-[#D4B896] text-xs mt-0.5">
                       {formatDate(submission.submitted_at)}
@@ -324,8 +324,8 @@ export default function InboxPage() {
                 </div>
                 <p className="font-josefin text-[#D4B896] text-sm capitalize truncate">
                   {typeFilter === 'contact'
-                    ? submission.data.projectType?.replace('-', ' ')
-                    : submission.data.position}
+                    ? submissionField(submission.data, 'projectType').replace('-', ' ')
+                    : submissionField(submission.data, 'position')}
                 </p>
                 <div className="flex items-center gap-2 pt-3 mt-3 border-t border-[#F5E6D0]/10">
                   <button

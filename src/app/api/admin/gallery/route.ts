@@ -1,18 +1,15 @@
 import { db } from '@/lib/db'
 import { galleryItems } from '@/lib/db/schema'
 import { galleryItemSchema } from '@/lib/schemas'
-import { auth } from '@/lib/auth'
+import { requireAdminSession } from '@/lib/server/admin-route'
 import { revalidatePublicSite } from '@/lib/revalidate'
 import { NextResponse } from 'next/server'
 import { asc } from 'drizzle-orm'
 
 export async function GET() {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     // Fetch all gallery items
     const data = await db
       .select()
@@ -31,11 +28,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const session = await auth()
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
+    const authResult = await requireAdminSession()
+    if (authResult.response) return authResult.response
     // Parse and validate request body
     const body = await request.json()
     const result = galleryItemSchema.safeParse(body)

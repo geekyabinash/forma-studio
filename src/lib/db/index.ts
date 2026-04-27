@@ -20,6 +20,6 @@ export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
     if (!instance) {
       throw new Error('Database not available (DATABASE_URL not set)')
     }
-    return (instance as any)[prop]
+    return Reflect.get(instance, prop)
   },
 })
