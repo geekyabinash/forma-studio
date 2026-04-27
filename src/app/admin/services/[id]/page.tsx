@@ -11,12 +11,6 @@ import {
   resolveServiceIconPath,
 } from '@/lib/service-icons'
 
-interface Service extends ServiceFormValues {
-  id: string
-  created_at: string
-  updated_at?: string
-}
-
 export default function EditServicePage() {
   const router = useRouter()
   const params = useParams()
@@ -50,15 +44,16 @@ export default function EditServicePage() {
         setFormData({
           title: service.title || '',
           slug: service.slug || '',
-          short_title: service.short_title || '',
+          short_title: service.shortTitle || service.short_title || '',
           description: service.description || '',
           icon: service.icon || '',
           features: service.features || [],
-          image_url: service.image_url || '',
-          image_alt: service.image_alt || '',
-          image_width: service.image_width || 0,
-          image_height: service.image_height || 0,
-          featured_project_slug: service.featured_project_slug || '',
+          image_url: service.imageUrl || service.image_url || '',
+          image_alt: service.imageAlt || service.image_alt || '',
+          image_width: service.imageWidth || service.image_width || 0,
+          image_height: service.imageHeight || service.image_height || 0,
+          featured_project_slug:
+            service.featuredProjectSlug || service.featured_project_slug || '',
         })
       } catch (error) {
         console.error('Fetch service error:', error)
