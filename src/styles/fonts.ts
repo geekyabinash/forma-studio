@@ -9,7 +9,7 @@ export const cormorant = Cormorant_Garamond({
 
 export const josefin = Josefin_Sans({
   subsets: ['latin'],
-  weight: ['300', '400', '600'],
+  weight: ['300', '400', '600', '700'],
   variable: '--font-josefin',
   display: 'swap',
 });
