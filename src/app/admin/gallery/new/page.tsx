@@ -14,6 +14,7 @@ import {
 export default function NewGalleryItemPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [isImageUploading, setIsImageUploading] = useState(false)
   const [formData, setFormData] = useState<GalleryItemValues>({
     image_url: '',
     image_alt: '',
@@ -85,6 +86,7 @@ export default function NewGalleryItemPage() {
               <ImageUploader
                 endpoint="galleryImage"
                 currentImage={formData.image_url}
+                onUploadingChange={setIsImageUploading}
                 onUploadComplete={(url, width, height) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -194,9 +196,14 @@ export default function NewGalleryItemPage() {
                 className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
                   hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
                   transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading || !formData.image_url}
+                disabled={loading || isImageUploading || !formData.image_url}
+                title={isImageUploading ? 'Please wait for the image to finish uploading' : undefined}
               >
-                {loading ? 'Uploading...' : 'Upload Image'}
+                {loading
+                  ? 'Uploading...'
+                  : isImageUploading
+                  ? 'Uploading image...'
+                  : 'Upload Image'}
               </button>
             </div>
           </form>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Plus, X, Save, ChevronUp, ChevronDown, Users } from 'lucide-react'
 import { toast } from 'sonner'
 import ImageUploader from '@/components/admin/ImageUploader'
@@ -60,6 +60,11 @@ export default function AboutContentPage() {
   const [formData, setFormData] = useState<AboutFormData>(emptyForm)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingCount, setUploadingCount] = useState(0)
+  const isAnyImageUploading = uploadingCount > 0
+  const handleUploadingChange = useCallback((b: boolean) => {
+    setUploadingCount((c) => Math.max(0, c + (b ? 1 : -1)))
+  }, [])
 
   useEffect(() => {
     fetchAboutContent()
@@ -525,6 +530,7 @@ export default function AboutContentPage() {
                     <ImageUploader
                       endpoint="generalUpload"
                       currentImage={member.image.url || undefined}
+                      onUploadingChange={handleUploadingChange}
                       onUploadComplete={(url, width, height) => {
                         updateTeamMember(index, 'image', {
                           url,
@@ -614,10 +620,15 @@ export default function AboutContentPage() {
               hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
               transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed
               flex items-center gap-2"
-            disabled={saving}
+            disabled={saving || isAnyImageUploading}
+            title={isAnyImageUploading ? 'Please wait for images to finish uploading' : undefined}
           >
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save About Content'}
+            {saving
+              ? 'Saving...'
+              : isAnyImageUploading
+              ? 'Uploading image...'
+              : 'Save About Content'}
           </button>
         </div>
       </form>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { useUploadThing } from '@/lib/uploadthing'
@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 interface ImageUploaderProps {
   endpoint: 'serviceImage' | 'galleryImage' | 'generalUpload'
   onUploadComplete: (url: string, width?: number, height?: number) => void
+  onUploadingChange?: (isUploading: boolean) => void
   currentImage?: string
   maxSizeMB?: number
 }
@@ -16,6 +17,7 @@ interface ImageUploaderProps {
 export default function ImageUploader({
   endpoint,
   onUploadComplete,
+  onUploadingChange,
   currentImage,
   maxSizeMB = 5,
 }: ImageUploaderProps) {
@@ -36,6 +38,26 @@ export default function ImageUploader({
       setPreview(null)
     },
   })
+
+  const onUploadingChangeRef = useRef(onUploadingChange)
+  useEffect(() => {
+    onUploadingChangeRef.current = onUploadingChange
+  })
+
+  const lastUploadingRef = useRef(false)
+  useEffect(() => {
+    if (lastUploadingRef.current === isUploading) return
+    lastUploadingRef.current = isUploading
+    onUploadingChangeRef.current?.(isUploading)
+  }, [isUploading])
+
+  useEffect(() => {
+    return () => {
+      if (lastUploadingRef.current) {
+        onUploadingChangeRef.current?.(false)
+      }
+    }
+  }, [])
 
   useEffect(() => {
     if (!isUploading) {
@@ -64,6 +86,7 @@ export default function ImageUploader({
       // Create preview and get dimensions
       const objectUrl = URL.createObjectURL(file)
       setPreview(objectUrl)
+      setProgress(0)
 
       const img = new Image()
       img.src = objectUrl
@@ -147,20 +170,40 @@ export default function ImageUploader({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
-          <button
-            onClick={removeImage}
-            className="absolute top-2 right-2 p-2 bg-red-500/90 hover:bg-red-600
-              rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-            type="button"
-          >
-            <X className="w-4 h-4 text-white" />
-          </button>
-          <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <ImageIcon className="w-4 h-4 text-white" />
-            <span className="font-josefin text-white text-sm">
-              Click X to remove
-            </span>
-          </div>
+          {isUploading ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#141B2B]/85 rounded-lg">
+              <div className="w-10 h-10 border-4 border-[#D4654A] border-t-transparent rounded-full animate-spin" />
+              <p className="font-josefin text-[#F5E6D0] text-sm">
+                Uploading image... {progress}%
+              </p>
+              <p className="font-josefin text-[#D4B896]/80 text-xs">
+                Please wait before saving
+              </p>
+              <div className="w-2/3 max-w-xs bg-[#1A2332] rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="bg-[#D4654A] h-full transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          ) : (
+            <>
+              <button
+                onClick={removeImage}
+                className="absolute top-2 right-2 p-2 bg-red-500/90 hover:bg-red-600
+                  rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                type="button"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+              <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <ImageIcon className="w-4 h-4 text-white" />
+                <span className="font-josefin text-white text-sm">
+                  Click X to remove
+                </span>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

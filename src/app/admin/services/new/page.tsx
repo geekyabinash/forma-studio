@@ -14,6 +14,7 @@ import {
 export default function NewServicePage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [isImageUploading, setIsImageUploading] = useState(false)
   const [formData, setFormData] = useState<ServiceFormValues>({
     title: '',
     slug: '',
@@ -314,6 +315,7 @@ export default function NewServicePage() {
               <ImageUploader
                 endpoint="serviceImage"
                 currentImage={formData.image_url}
+                onUploadingChange={setIsImageUploading}
                 onUploadComplete={(url, width, height) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -360,9 +362,14 @@ export default function NewServicePage() {
                 className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
                   hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
                   transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
+                disabled={loading || isImageUploading}
+                title={isImageUploading ? 'Please wait for the image to finish uploading' : undefined}
               >
-                {loading ? 'Creating...' : 'Create Service'}
+                {loading
+                  ? 'Creating...'
+                  : isImageUploading
+                  ? 'Uploading image...'
+                  : 'Create Service'}
               </button>
             </div>
           </form>

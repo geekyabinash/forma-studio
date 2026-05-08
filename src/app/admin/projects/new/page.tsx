@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Plus, X, Eye, EyeOff } from 'lucide-react'
 import ImageUploader from '@/components/admin/ImageUploader'
@@ -61,6 +61,11 @@ export default function NewProjectPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [uploadingCount, setUploadingCount] = useState(0)
+  const isAnyImageUploading = uploadingCount > 0
+  const handleUploadingChange = useCallback((b: boolean) => {
+    setUploadingCount((c) => Math.max(0, c + (b ? 1 : -1)))
+  }, [])
   const [formData, setFormData] = useState<ProjectFormData>({
     title: '',
     slug: '',
@@ -403,6 +408,7 @@ export default function NewProjectPage() {
                   <ImageUploader
                     endpoint="generalUpload"
                     currentImage={formData.hero_image.url}
+                    onUploadingChange={handleUploadingChange}
                     onUploadComplete={(url, width, height) => {
                       setFormData((prev) => ({
                         ...prev,
@@ -476,6 +482,7 @@ export default function NewProjectPage() {
                           <ImageUploader
                             endpoint="generalUpload"
                             currentImage={image.url}
+                            onUploadingChange={handleUploadingChange}
                             onUploadComplete={(url, width, height) => {
                               updateGalleryImage(index, {
                                 url,
@@ -570,9 +577,14 @@ export default function NewProjectPage() {
                 className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
                   hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
                   transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={loading}
+                disabled={loading || isAnyImageUploading}
+                title={isAnyImageUploading ? 'Please wait for images to finish uploading' : undefined}
               >
-                {loading ? 'Creating...' : 'Create Project'}
+                {loading
+                  ? 'Creating...'
+                  : isAnyImageUploading
+                  ? 'Uploading image...'
+                  : 'Create Project'}
               </button>
             </div>
           </form>

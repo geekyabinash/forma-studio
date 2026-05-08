@@ -17,6 +17,7 @@ export default function EditGalleryItemPage() {
   const itemId = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [isImageUploading, setIsImageUploading] = useState(false)
   const [formData, setFormData] = useState<GalleryItemValues>({
     image_url: '',
     image_alt: '',
@@ -129,6 +130,7 @@ export default function EditGalleryItemPage() {
               <ImageUploader
                 endpoint="galleryImage"
                 currentImage={formData.image_url}
+                onUploadingChange={setIsImageUploading}
                 onUploadComplete={(url, width, height) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -238,9 +240,14 @@ export default function EditGalleryItemPage() {
                 className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
                   hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
                   transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={saving || !formData.image_url}
+                disabled={saving || isImageUploading || !formData.image_url}
+                title={isImageUploading ? 'Please wait for the image to finish uploading' : undefined}
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving
+                  ? 'Saving...'
+                  : isImageUploading
+                  ? 'Uploading image...'
+                  : 'Save Changes'}
               </button>
             </div>
           </form>

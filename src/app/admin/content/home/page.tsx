@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Save, ArrowUp, ArrowDown, X as XIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import ImageUploader from '@/components/admin/ImageUploader'
@@ -246,6 +246,11 @@ export default function HomeContentPage() {
   const [availableProjects, setAvailableProjects] = useState<PickerItem[]>([])
   const [availableServices, setAvailableServices] = useState<PickerItem[]>([])
   const [pickerLoading, setPickerLoading] = useState(true)
+  const [uploadingCount, setUploadingCount] = useState(0)
+  const isAnyImageUploading = uploadingCount > 0
+  const handleUploadingChange = useCallback((b: boolean) => {
+    setUploadingCount((c) => Math.max(0, c + (b ? 1 : -1)))
+  }, [])
 
   useEffect(() => {
     fetchHomeContent()
@@ -572,6 +577,7 @@ export default function HomeContentPage() {
                 <ImageUploader
                   endpoint="generalUpload"
                   currentImage={formData.parallax_image_bg.url || undefined}
+                  onUploadingChange={handleUploadingChange}
                   onUploadComplete={(url, w, h) =>
                     updateImage('parallax_image_bg', url, w, h)
                   }
@@ -591,6 +597,7 @@ export default function HomeContentPage() {
                 <ImageUploader
                   endpoint="generalUpload"
                   currentImage={formData.parallax_image_mid.url || undefined}
+                  onUploadingChange={handleUploadingChange}
                   onUploadComplete={(url, w, h) =>
                     updateImage('parallax_image_mid', url, w, h)
                   }
@@ -610,6 +617,7 @@ export default function HomeContentPage() {
                 <ImageUploader
                   endpoint="generalUpload"
                   currentImage={formData.parallax_image_fg.url || undefined}
+                  onUploadingChange={handleUploadingChange}
                   onUploadComplete={(url, w, h) =>
                     updateImage('parallax_image_fg', url, w, h)
                   }
@@ -716,6 +724,7 @@ export default function HomeContentPage() {
               <ImageUploader
                 endpoint="generalUpload"
                 currentImage={formData.about_snippet_image.url || undefined}
+                onUploadingChange={handleUploadingChange}
                 onUploadComplete={(url, w, h) =>
                   updateImage('about_snippet_image', url, w, h)
                 }
@@ -1062,10 +1071,15 @@ export default function HomeContentPage() {
           <button
             type="submit"
             className="px-8 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-            disabled={saving}
+            disabled={saving || isAnyImageUploading}
+            title={isAnyImageUploading ? 'Please wait for images to finish uploading' : undefined}
           >
             <Save className="w-4 h-4" />
-            {saving ? 'Saving...' : 'Save Home Content'}
+            {saving
+              ? 'Saving...'
+              : isAnyImageUploading
+              ? 'Uploading image...'
+              : 'Save Home Content'}
           </button>
         </div>
       </form>

@@ -18,6 +18,7 @@ export default function EditServicePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [isImageUploading, setIsImageUploading] = useState(false)
   const [formData, setFormData] = useState<ServiceFormValues>({
     title: '',
     slug: '',
@@ -369,6 +370,7 @@ export default function EditServicePage() {
               <ImageUploader
                 endpoint="serviceImage"
                 currentImage={formData.image_url}
+                onUploadingChange={setIsImageUploading}
                 onUploadComplete={(url, width, height) => {
                   setFormData((prev) => ({
                     ...prev,
@@ -415,9 +417,14 @@ export default function EditServicePage() {
                 className="flex-1 px-6 py-3 bg-[#D4654A] text-white rounded-lg font-josefin text-sm
                   hover:bg-[#D4654A]/90 shadow-lg shadow-[#D4654A]/20
                   transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={saving}
+                disabled={saving || isImageUploading}
+                title={isImageUploading ? 'Please wait for the image to finish uploading' : undefined}
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving
+                  ? 'Saving...'
+                  : isImageUploading
+                  ? 'Uploading image...'
+                  : 'Save Changes'}
               </button>
             </div>
           </form>
