@@ -129,8 +129,8 @@ export default function ParallaxShowcase({
       {/* Background architectural image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/parallax/layer-1-bg.jpg"
-          alt=""
+          src={imageBg.url}
+          alt={imageBg.alt}
           fill
           className="object-cover opacity-15"
           sizes="100vw"

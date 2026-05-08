@@ -128,22 +128,19 @@ export default function HeroVideo({
         </div>
         <h1
           ref={titleRef}
-          className="font-sans font-bold text-5xl md:text-7xl lg:text-8xl tracking-[0.15em] md:tracking-[0.2em] leading-[1.1] text-cream -mt-2 md:-mt-3"
-          style={{ fontFamily: 'var(--font-sans)', textShadow: '0 4px 12px rgba(0,0,0,0.6)' }}
+          className="-mt-2 md:-mt-3"
+          style={{ filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.6))' }}
         >
-          <span className="block whitespace-nowrap">
-            F<span className="text-orange">O</span>RMA
-          </span>
-          <span className="block whitespace-nowrap">
-            STU
-            <span
-              className="text-orange inline-block -ml-[0.05em] mr-[0.15em]"
-              style={{ letterSpacing: '0em' }}
-            >
-              D
-            </span>
-            IO
-          </span>
+          <span className="sr-only">Forma Studio</span>
+          <Image
+            src="/images/logo/FormaStudioFont.png"
+            alt=""
+            aria-hidden
+            width={2400}
+            height={827}
+            priority
+            className="w-[280px] md:w-[460px] lg:w-[600px] h-auto"
+          />
         </h1>
         <p
           ref={tagline1Ref}

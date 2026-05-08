@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { useUploadThing } from '@/lib/uploadthing'
@@ -36,6 +36,12 @@ export default function ImageUploader({
       setPreview(null)
     },
   })
+
+  useEffect(() => {
+    if (!isUploading) {
+      setPreview(currentImage || null)
+    }
+  }, [currentImage, isUploading])
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
