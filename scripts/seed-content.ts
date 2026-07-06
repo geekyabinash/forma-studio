@@ -13,6 +13,9 @@ import {
   aboutContent,
   contactInfo,
 } from '../src/lib/db/schema'
+import { assertSeedAllowed } from './seed-safety'
+
+assertSeedAllowed('db:seed-content')
 
 import { config } from 'dotenv'
 config({ path: '.env.local' })

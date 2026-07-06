@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { WHATSAPP_CHAT_URL } from '@/lib/contact-links';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
-const FALLBACK_WHATSAPP_URL =
-  'https://wa.me/919999999999?text=Hi%2C%20I%27d%20like%20to%20discuss%20a%20project%20with%20Forma%20Studio.';
+const FALLBACK_WHATSAPP_URL = WHATSAPP_CHAT_URL;
 
 interface WhatsAppFloatProps {
   url?: string;

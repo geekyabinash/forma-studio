@@ -14,6 +14,9 @@ import {
   careerBenefits,
   careerValues,
 } from '../src/lib/db/schema'
+import { assertSeedAllowed } from './seed-safety'
+
+assertSeedAllowed('db:seed')
 
 // Load env vars
 import { config } from 'dotenv'

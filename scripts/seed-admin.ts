@@ -11,6 +11,9 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import bcrypt from 'bcryptjs'
 import { users } from '../src/lib/db/schema'
+import { assertSeedAllowed } from './seed-safety'
+
+assertSeedAllowed('db:seed-admin')
 
 import { config } from 'dotenv'
 config({ path: '.env.local' })

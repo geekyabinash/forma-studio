@@ -26,7 +26,7 @@ export default function RootLayout({
       lang="en"
       className={`${cormorant.variable} ${josefin.variable} ${dancingScript.variable}`}
     >
-      <body>{children}</body>
+      <body suppressHydrationWarning>{children}</body>
     </html>
   );
 }

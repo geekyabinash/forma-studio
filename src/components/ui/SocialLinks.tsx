@@ -2,6 +2,7 @@
 
 import { InstagramIcon, FacebookIcon, LinkedinIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { WHATSAPP_CHAT_URL } from '@/lib/contact-links';
 import WhatsAppIcon from '@/components/ui/WhatsAppIcon';
 
 export interface SocialUrls {
@@ -15,7 +16,7 @@ const FALLBACK_URLS: Required<SocialUrls> = {
   instagram: 'https://www.instagram.com/',
   facebook: 'https://www.facebook.com/',
   linkedin: 'https://www.linkedin.com/',
-  whatsapp: 'https://wa.me/',
+  whatsapp: WHATSAPP_CHAT_URL,
 };
 
 interface SocialLinksProps {

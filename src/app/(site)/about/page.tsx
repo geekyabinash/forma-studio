@@ -70,6 +70,22 @@ interface AboutData {
   teamMembers: { name: string; role: string; bio: string; sort_order: number; image: { url: string; alt: string; width: number; height: number } }[];
 }
 
+function getReadableBioSentences(bio: string): string[] {
+  const trimmedBio = bio.trim();
+  if (!trimmedBio) return [];
+
+  const protectedBio = trimmedBio
+    .replace(/\bB\.\s*Arch\b/g, 'B<dot> Arch')
+    .replace(/\bM\.\s*Arch\b/g, 'M<dot> Arch');
+
+  return (
+    protectedBio
+      .match(/[^.!?]+[.!?]+(?:\s|$)|[^.!?]+$/g)
+      ?.map((sentence) => sentence.replace(/<dot>/g, '.').trim())
+      .filter(Boolean) ?? []
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  About Page                                                         */
 /* ------------------------------------------------------------------ */
@@ -179,7 +195,7 @@ export default function AboutPage() {
       <section className="bg-dark py-24 md:py-32 px-6">
         <SectionHeading title="Our Team" dark={true} />
 
-        <div className="max-w-6xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="max-w-6xl mx-auto mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
           {(content.teamMembers.length > 0
             ? [...content.teamMembers].sort((a, b) => a.sort_order - b.sort_order).map((m, i) => ({
                 id: `team-db-${i}`,
@@ -189,39 +205,64 @@ export default function AboutPage() {
                 image: m.image,
               }))
             : staticTeam
-          ).map((member, index) => (
-            <ScrollReveal
-              key={member.id}
-              direction="up"
-              delay={index * 0.1}
-            >
-              <div className="group relative overflow-hidden">
-                {/* Portrait */}
-                <div className="relative h-[400px]">
+          ).map((member, index) => {
+            const bioSentences = getReadableBioSentences(member.bio);
+
+            return (
+              <ScrollReveal
+                key={member.id}
+                direction="up"
+                delay={index * 0.1}
+              >
+                <article
+                  tabIndex={0}
+                  className="group relative h-[560px] overflow-hidden border border-cream/10 bg-[#0f1724] shadow-[0_24px_70px_rgba(0,0,0,0.28)] outline-none transition-all duration-500 focus-visible:border-gold/70 focus-visible:shadow-[0_28px_90px_rgba(0,0,0,0.42)] md:h-[620px]"
+                  aria-label={`${member.name}, ${member.role}`}
+                >
+                  {/* Portrait */}
                   <Image
                     src={member.image.url}
                     alt={member.image.alt}
                     fill
-                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                    className="object-cover object-[center_18%] grayscale transition-all duration-700 group-hover:scale-[1.04] group-hover:grayscale-0 group-focus-within:scale-[1.04] group-focus-within:grayscale-0"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
-                </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark/92 via-dark/22 to-dark/0 transition-opacity duration-500 group-hover:opacity-100 group-focus-within:opacity-100" />
+                  <div className="absolute inset-x-0 bottom-0 h-48 bg-[linear-gradient(180deg,transparent,rgba(10,17,29,0.98))]" />
 
-                {/* Info overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-dark/90 to-transparent">
-                  <p className="font-sans font-semibold text-cream text-lg">
-                    {member.name}
-                  </p>
-                  <p className="font-sans font-light text-gold text-sm tracking-wider uppercase mt-1">
-                    {member.role}
-                  </p>
-                  <p className="font-sans text-cream/60 text-sm mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    {member.bio}
-                  </p>
-                </div>
-              </div>
-            </ScrollReveal>
-          ))}
+                  {/* Identity */}
+                  <div className="absolute inset-x-0 bottom-0 z-10 p-6 transition-all duration-500 group-hover:-translate-y-6 group-hover:opacity-0 group-focus-within:-translate-y-6 group-focus-within:opacity-0 md:p-7">
+                    <p className="font-sans text-2xl font-semibold text-cream md:text-3xl">
+                      {member.name}
+                    </p>
+                    <p className="mt-3 max-w-[18rem] font-sans text-xs font-light uppercase tracking-[0.32em] text-gold/85 md:text-sm">
+                      {member.role}
+                    </p>
+                  </div>
+
+                  {/* Bio reveal */}
+                  <div className="absolute inset-0 z-20 flex translate-y-5 bg-[radial-gradient(circle_at_top_right,rgba(197,160,89,0.16),transparent_34%),linear-gradient(180deg,rgba(10,17,29,0.56),rgba(10,17,29,0.96))] p-5 opacity-0 backdrop-blur-[2px] transition-all duration-500 ease-out group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100 md:p-6">
+                    <div className="flex h-full w-full flex-col justify-center border border-gold/24 bg-dark/48 p-5 shadow-[0_18px_60px_rgba(0,0,0,0.42)] md:p-6">
+                      <p className="font-sans text-lg font-semibold text-cream md:text-xl">
+                        {member.name}
+                      </p>
+                      <p className="mt-2 font-sans text-[11px] font-light uppercase tracking-[0.3em] text-gold/90 md:text-xs">
+                        {member.role}
+                      </p>
+                      <div className="mt-3 h-px w-14 bg-gold/45 md:mt-4" />
+                      {bioSentences.length > 0 && (
+                        <div className="team-bio-copy mt-4 space-y-2 font-sans text-[12px] leading-6 text-cream/84 md:text-[13px] md:leading-6">
+                          {bioSentences.map((sentence, sentenceIndex) => (
+                            <p key={`${member.id}-bio-${sentenceIndex}`}>{sentence}</p>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              </ScrollReveal>
+            );
+          })}
         </div>
       </section>
 
